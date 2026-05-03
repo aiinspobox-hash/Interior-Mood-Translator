@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { nanoid } from "nanoid";
-import type { InspireImage, Room } from "@/lib/types";
+import type { FurnitureItem, InspireImage, Room } from "@/lib/types";
 
 function now() {
   return Date.now();
@@ -18,6 +18,11 @@ type State = {
   removeRoom: (id: string) => void;
   addImage: (roomId: string, image: Omit<InspireImage, "id">) => void;
   removeImage: (roomId: string, imageId: string) => void;
+  addFurniture: (
+    roomId: string,
+    item: Omit<FurnitureItem, "id">,
+  ) => void;
+  removeFurniture: (roomId: string, furnitureId: string) => void;
 };
 
 export const useRoomStore = create<State>()(
@@ -40,6 +45,7 @@ export const useRoomStore = create<State>()(
               styleTags: [],
               colorTags: [],
               images: [],
+              furniture: [],
               createdAt: t,
               updatedAt: t,
             },
@@ -74,6 +80,23 @@ export const useRoomStore = create<State>()(
         if (!row) return;
         get().updateRoom(roomId, {
           images: row.images.filter((i) => i.id !== imageId),
+        });
+      },
+
+      addFurniture: (roomId, item) => {
+        const row = get().rooms.find((r) => r.id === roomId);
+        if (!row) return;
+        const next: FurnitureItem = { ...item, id: nanoid() };
+        const list = row.furniture ?? [];
+        get().updateRoom(roomId, { furniture: [...list, next] });
+      },
+
+      removeFurniture: (roomId, furnitureId) => {
+        const row = get().rooms.find((r) => r.id === roomId);
+        if (!row) return;
+        const list = row.furniture ?? [];
+        get().updateRoom(roomId, {
+          furniture: list.filter((f) => f.id !== furnitureId),
         });
       },
     }),

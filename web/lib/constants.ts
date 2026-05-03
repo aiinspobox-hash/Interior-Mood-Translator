@@ -45,3 +45,6 @@ export const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 
 /** Moodboard 網格最多展示張數 */
 export const MOODBOARD_MAX_IMAGES = 12;
+
+/** Moodboard 家具區最多展示張數（其餘仍保存在編輯清單） */
+export const MOODBOARD_MAX_FURNITURE = 12;

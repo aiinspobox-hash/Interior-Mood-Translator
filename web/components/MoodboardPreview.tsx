@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { MOODBOARD_MAX_IMAGES } from "@/lib/constants";
+import { MOODBOARD_MAX_FURNITURE, MOODBOARD_MAX_IMAGES } from "@/lib/constants";
 import { extractPaletteFromImageSources } from "@/lib/extractImagePalette";
 import type { Room } from "@/lib/types";
 
@@ -25,6 +25,10 @@ export const DESIGN_BRIEF_EXPORT_ID = "design-brief-export";
 const PALETTE_COUNT = 5;
 
 export function MoodboardPreview({ room }: Props) {
+  const furnitureList = room.furniture ?? [];
+  const shownFurniture = furnitureList.slice(0, MOODBOARD_MAX_FURNITURE);
+  const furnitureExtras = furnitureList.length - shownFurniture.length;
+
   const shown = room.images.slice(0, MOODBOARD_MAX_IMAGES);
   const extras = room.images.length - shown.length;
 
@@ -41,6 +45,7 @@ export function MoodboardPreview({ room }: Props) {
   );
 
   useEffect(() => {
+    // 色票僅從靈感圖（room.images）萃取；不包含家具圖（furniture）
     const sources = room.images
       .slice(0, MOODBOARD_MAX_IMAGES)
       .map((img) => img.src);
@@ -115,16 +120,14 @@ export function MoodboardPreview({ room }: Props) {
           </div>
 
           <div className="flex min-h-[120px] flex-col">
-            <p className="text-xs font-medium text-ink-soft">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink">
               INSPIRATION IMAGES
             </p>
             {shown.length === 0 ? (
               <p className="mt-3 text-sm text-ink-soft">尚無圖片</p>
             ) : (
               <>
-                <div
-                  className={`mt-3 grid gap-2 ${shown.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}
-                >
+                <div className="mt-3 grid grid-cols-2 gap-2">
                   {shown.map((img) => (
                     <div
                       key={img.id}
@@ -148,6 +151,33 @@ export function MoodboardPreview({ room }: Props) {
                 )}
               </>
             )}
+
+            {shownFurniture.length > 0 && (
+              <div className="mt-6">
+                <div className="grid grid-cols-2 gap-2">
+                  {shownFurniture.map((f) => (
+                    <div
+                      key={f.id}
+                      className="overflow-hidden rounded-lg border border-border-warm bg-peach/20"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={f.imageSrc}
+                        alt=""
+                        className="aspect-square w-full object-cover"
+                        crossOrigin="anonymous"
+                      />
+                    </div>
+                  ))}
+                </div>
+                {furnitureExtras > 0 && (
+                  <p className="mt-2 text-xs text-ink-soft">
+                    另有 {furnitureExtras} 件家具圖未放入拼貼（單頁最多{" "}
+                    {MOODBOARD_MAX_FURNITURE} 張）
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -156,7 +186,7 @@ export function MoodboardPreview({ room }: Props) {
             COLOR PALETTE
           </p>
           <p className="mt-1 text-[10px] text-ink-soft">
-            由上方圖像拼貼自動萃取 5 色
+            依靈感圖片自動萃取 5 色
           </p>
           {shown.length === 0 ? (
             <p className="mt-4 text-sm text-ink-soft">尚無圖片，無法產生色票</p>

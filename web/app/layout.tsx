@@ -1,13 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Inter } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import { PersistGate } from "@/components/PersistGate";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -33,7 +27,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh-Hant"
-      className={`${inter.variable} ${geistMono.variable} h-full bg-app text-ink antialiased`}
+      className={`${geistMono.variable} h-full bg-app text-ink antialiased`}
     >
       <body className="flex min-h-full flex-col bg-app text-ink antialiased">
         <PersistGate>{children}</PersistGate>

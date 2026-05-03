@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ExportPdfButton } from "@/components/ExportPdfButton";
+import { FurnitureSection } from "@/components/FurnitureSection";
 import { InspirationImages } from "@/components/InspirationImages";
 import { MoodboardPreview } from "@/components/MoodboardPreview";
 import { TagEditor } from "@/components/TagEditor";
@@ -20,6 +21,8 @@ export function RoomEditor({ roomId }: Props) {
   const removeRoom = useRoomStore((s) => s.removeRoom);
   const addImage = useRoomStore((s) => s.addImage);
   const removeImage = useRoomStore((s) => s.removeImage);
+  const addFurniture = useRoomStore((s) => s.addFurniture);
+  const removeFurniture = useRoomStore((s) => s.removeFurniture);
 
   if (!room) {
     return (
@@ -150,6 +153,12 @@ export function RoomEditor({ roomId }: Props) {
           images={current.images}
           onAdd={(img) => addImage(roomId, img)}
           onRemove={(imageId) => removeImage(roomId, imageId)}
+        />
+
+        <FurnitureSection
+          items={current.furniture ?? []}
+          onAdd={(item) => addFurniture(roomId, item)}
+          onRemove={(furnitureId) => removeFurniture(roomId, furnitureId)}
         />
 
         <MoodboardPreview room={current} />
