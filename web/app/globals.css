@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+/*
+  Color system — 見專案根目錄 color.md
+  固定淺色主題；同時在 :root 定義實色，避免 @theme 變數未套用到自訂 body 規則時背景失效。
+  color-scheme: light 避免瀏覽器依系統深色模式把預設「底」畫成黑色。
+*/
+
+:root {
+  --background: #fff6e9;
+  --foreground: #333333;
+
+  /* 與下方 @theme 一致，供自訂 CSS 與 var() 使用 */
+  --color-app: #fff6e9;
+  --color-surface: #ffffff;
+  --color-peach: #f7d9c4;
+  --color-sand: #e7c9a9;
+  --color-sage: #c9d6c4;
+  --color-sage-ink: #2f3a33;
+  --color-ink: #333333;
+  --color-ink-muted: #5c5c5c;
+  --color-ink-soft: #737373;
+  --color-border-warm: #f7d9c4;
+  --color-border-sand: #e7c9a9;
+  --color-accent: #f2b84b;
+  --color-accent-hover: #e6a93d;
+  --color-on-accent: #ffffff;
+  --color-link-hover: #f2b84b;
+  --color-pink-soft: #f6b8c4;
+  --color-danger: #b91c1c;
+  --color-danger-surface: #fff5f5;
+}
+
+@theme inline {
+  --color-app: #fff6e9;
+  --color-surface: #ffffff;
+  --color-peach: #f7d9c4;
+  --color-sand: #e7c9a9;
+  --color-sage: #c9d6c4;
+  --color-sage-ink: #2f3a33;
+  --color-ink: #333333;
+  --color-ink-muted: #5c5c5c;
+  --color-ink-soft: #737373;
+  --color-border-warm: #f7d9c4;
+  --color-border-sand: #e7c9a9;
+  --color-accent: #f2b84b;
+  --color-accent-hover: #e6a93d;
+  --color-on-accent: #ffffff;
+  --color-link-hover: #f2b84b;
+  --color-pink-soft: #f6b8c4;
+  --color-danger: #b91c1c;
+  --color-danger-surface: #fff5f5;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  color-scheme: light;
+  background-color: #fff6e9;
+}
+
+body {
+  min-height: 100%;
+  background-color: #fff6e9;
+  color: #333333;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
