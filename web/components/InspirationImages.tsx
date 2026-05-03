@@ -24,6 +24,7 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
   const [urlDraft, setUrlDraft] = useState("");
   const [labelDraft, setLabelDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [urlFetching, setUrlFetching] = useState(false);
 
   async function onPickFiles(files: FileList | null) {
     setError(null);
@@ -47,10 +48,11 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
     if (inputRef.current) inputRef.current.value = "";
   }
 
-  function addFromUrl() {
+  async function addFromUrl() {
     setError(null);
     const raw = urlDraft.trim();
     if (!raw) return;
+
     let u: URL;
     try {
       u = new URL(raw);
@@ -62,18 +64,43 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
       setError("僅支援 http / https");
       return;
     }
-    onAdd({
-      src: u.toString(),
-      sourceLabel: labelDraft.trim() || u.hostname,
-    });
-    setUrlDraft("");
+
+    setUrlFetching(true);
+    try {
+      const res = await fetch("/api/fetch-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: raw }),
+      });
+
+      const data: { dataUrl?: string; error?: string } = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "下載圖片失敗");
+        return;
+      }
+      if (!data.dataUrl) {
+        setError("伺服器回應異常，請稍後再試");
+        return;
+      }
+
+      onAdd({
+        src: data.dataUrl,
+        sourceLabel: labelDraft.trim() || u.hostname,
+      });
+      setUrlDraft("");
+    } catch {
+      setError("無法連線，請確認已啟動開發伺服器或網路正常");
+    } finally {
+      setUrlFetching(false);
+    }
   }
 
   return (
     <section className="space-y-4">
       <h2 className="text-base font-semibold text-ink">靈感圖片</h2>
       <p className="text-sm text-ink-muted">
-        上傳檔案或貼上圖片 URL；可選填來源標記（品牌、平台）。
+        上傳檔案，或貼上圖片 URL（系統會由伺服器下載並轉成可匯出
+        PDF 的格式）。可選填來源標記（品牌、平台）。
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -94,14 +121,16 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
             value={urlDraft}
             onChange={(e) => setUrlDraft(e.target.value)}
             placeholder="https://..."
-            className="mb-2 w-full rounded-lg border border-border-warm bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-soft outline-none ring-accent/25 focus:ring-2"
+            disabled={urlFetching}
+            className="mb-2 w-full rounded-lg border border-border-warm bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-soft outline-none ring-accent/25 focus:ring-2 disabled:opacity-60"
           />
           <button
             type="button"
-            onClick={addFromUrl}
-            className="w-full rounded-full bg-accent py-2.5 text-sm font-medium text-on-accent hover:bg-accent-hover"
+            disabled={urlFetching}
+            onClick={() => void addFromUrl()}
+            className="w-full rounded-full bg-accent py-2.5 text-sm font-medium text-on-accent hover:bg-accent-hover disabled:opacity-60"
           >
-            加入網址圖片
+            {urlFetching ? "下載圖片中…" : "加入網址圖片"}
           </button>
         </div>
       </div>

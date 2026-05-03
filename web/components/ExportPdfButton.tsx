@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { DESIGN_BRIEF_EXPORT_ID } from "@/components/MoodboardPreview";
+import { sanitizeCloneForHtml2Canvas } from "@/lib/sanitizeForHtml2Canvas";
 
 type Props = {
   fileNameBase: string;
@@ -23,12 +24,26 @@ export function ExportPdfButton({ fileNameBase }: Props) {
       const html2canvas = (await import("html2canvas")).default;
       const { jsPDF } = await import("jspdf");
 
-      const canvas = await html2canvas(el, {
+      const commonOpts = {
         scale: 2,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: "#ffffff",
-      });
+        backgroundColor: "#ffffff" as const,
+        onclone: (clonedDoc: Document) => {
+          sanitizeCloneForHtml2Canvas(clonedDoc);
+        },
+      };
+
+      let canvas: HTMLCanvasElement;
+      try {
+        canvas = await html2canvas(el, commonOpts);
+      } catch (firstErr) {
+        console.warn("html2canvas retry with foreignObjectRendering", firstErr);
+        canvas = await html2canvas(el, {
+          ...commonOpts,
+          foreignObjectRendering: true,
+        });
+      }
 
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
@@ -57,9 +72,7 @@ export function ExportPdfButton({ fileNameBase }: Props) {
       pdf.save(`design-brief-${safe || "room"}.pdf`);
     } catch (e) {
       console.error(e);
-      setErr(
-        "匯出失敗。若使用外部圖片網址，可能受跨網域限制；請改用上傳圖片。",
-      );
+      setErr("匯出失敗。請重新整理頁面後再試，或減少圖片數量。");
     } finally {
       setBusy(false);
     }
