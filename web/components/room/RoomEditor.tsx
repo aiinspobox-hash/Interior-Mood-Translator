@@ -50,6 +50,28 @@ export function RoomEditor({ roomId }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
+      <Link
+        href="/"
+        aria-label="回到首頁"
+        className="group mb-5 inline-flex items-center text-ink-soft transition hover:text-ink"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.25"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
+          <path d="M19 12H5" />
+          <path d="m12 19-7-7 7-7" />
+        </svg>
+      </Link>
+
       <nav className="mb-8 text-sm text-ink-soft">
         <Link
           href="/"
