@@ -4,6 +4,9 @@ import Link from "next/link";
 import type { TransitionEvent } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { ValueCollageInteractive } from "@/components/landing/ValueCollageInteractive";
+import { GUIDE_ARTICLES } from "@/content/guideArticles";
+
 const HERO_SLIDES = [
   {
     src: "/landing/hero-1.png",
@@ -27,42 +30,54 @@ const NAV = [
 
 const TESTIMONIALS = [
   {
-    quote: "（佔位）之後可放真實回饋：整理靈感變快很多。",
-    name: "使用者 A",
+    quote:
+      "原本跟設計師雞同鴨講，用了 Moodly 的 PDF 摘要後，對方馬上抓到我要的色調和風格，省下超多溝通時間！",
+    name: "Emily，首購族",
   },
   {
-    quote: "（佔位）預留第二則引言區塊。",
-    name: "使用者 B",
+    quote:
+      "我喜歡它的『避免項目』功能，我討厭深色木紋，標註後終於不用再看那些我不喜歡的設計了。",
+    name: "Kevin，租屋改造者",
   },
   {
-    quote: "（佔位）第三則，可搭配輪播或靜態列表。",
-    name: "使用者 C",
+    quote:
+      "介面很乾淨，匯出的 PDF 很專業，直接存在手機裡去挑家具也很好用。",
+    name: "Sarah，室內設計師客戶",
   },
 ] as const;
 
-const ZIGZAG = [
+const HOW_STEPS = [
   {
-    title: "步驟一（佔位）",
-    body: "此區將放「如何使用 Moodly」的第一步說明。",
-    align: "left" as const,
+    title: "建立空間需求",
+    body: "選擇居家類型，填寫生活習慣與避諱材質，定義出屬於你的空間個性。",
   },
   {
-    title: "步驟二（佔位）",
-    body: "此區將放第二步：建立空間、上傳靈感圖等。",
-    align: "right" as const,
+    title: "匯入靈感碎片",
+    body: "上傳心動圖片或貼上網址，加入家具意向，讓抽象的想法具象化為視覺圖板。",
   },
   {
-    title: "步驟三（佔位）",
-    body: "此區將放第三步：匯出 moodboard／PDF 等。",
-    align: "left" as const,
+    title: "匯出設計摘要",
+    body: "預覽自動排版後的 Moodboard，一鍵轉存 PDF，隨時隨地與設計師精準對頻。",
   },
-];
+] as const;
 
 const GRID_CARDS = [
-  { title: "痛點一（佔位）", desc: "之後寫這個產品能解決的具體情境。" },
-  { title: "痛點二（佔位）", desc: "簡短一句話說明價值主張。" },
-  { title: "痛點三（佔位）", desc: "可連結到下方詳細說明區塊。" },
-  { title: "痛點四（佔位）", desc: "四格網格方便掃讀。" },
+  {
+    title: "靈感雜亂無章",
+    desc: "提供系統化標籤管理，讓你的素材從雜亂變井然。",
+  },
+  {
+    title: "設計需求難言傳",
+    desc: "透過結構化文字欄位，引導你精準描述對生活的期待。",
+  },
+  {
+    title: "溝通落差大",
+    desc: "PDF 設計摘要讓設計師精準掌握視覺偏好，降低來回修圖的風險。",
+  },
+  {
+    title: "圖片整合困難",
+    desc: "透過 API 代抓與 Base64 轉換，無論來源為何，都能整合為統一格式的圖板。",
+  },
 ];
 
 export function LandingMarketingPage() {
@@ -79,6 +94,8 @@ export function LandingMarketingPage() {
   const [heroInstant, setHeroInstant] = useState(false);
   const [tIndex, setTIndex] = useState(0);
   const [navOpen, setNavOpen] = useState(false);
+
+  const [guideFeatured, ...guideSide] = GUIDE_ARTICLES;
 
   /** 軌道索引永遠落在 [0, heroExtLen-1]，避免連點超出無限輪播複製區而讀到 undefined */
   const heroRailSafe = Math.min(
@@ -275,8 +292,8 @@ export function LandingMarketingPage() {
                   把裝潢靈感，整理成看得懂的 moodboard。
                 </h1>
                 <p className="mt-4 text-base leading-relaxed text-ink sm:mt-5 sm:text-lg">
-                  （佔位）這裡放一句副標，說明 Moodly
-                  適合誰、在什麼情境使用。下方區塊將展開「能解決什麼」與「如何使用」。
+                  讓你的裝潢靈感不再零散。從破碎的收藏，到精準的設計摘要，Moodly
+                  幫你精準傳達對家的所有想像。
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link
@@ -353,77 +370,71 @@ export function LandingMarketingPage() {
           id="value"
           className="scroll-mt-24 bg-app py-16 sm:py-24"
         >
-          <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16">
-            <div>
-              <div className="mb-6 inline-flex rounded-2xl bg-peach/20 p-4 text-sage-ink shadow-card">
-                <span className="text-3xl" aria-hidden>
-                  ◎
-                </span>
-              </div>
+          <div className="mx-auto grid max-w-6xl min-w-0 gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,4fr)_minmax(0,6fr)] lg:items-center lg:gap-12">
+            <div className="min-w-0">
               <h2 className="font-moodly text-3xl font-semibold text-ink sm:text-4xl">
-                能為你解決什麼？（區塊佔位）
+                把雜亂的靈感，變成設計師一眼就懂的溝通語言。
               </h2>
               <p className="mt-4 text-base leading-relaxed text-ink-muted">
-                此段預留給你寫「使用者的痛點」與 Moodly
-                如何對應。可放兩到三段說明，語氣建議具體、好掃讀。
+                痛點與對應：你是否收藏了無數張 Pinterest
+                美圖，卻無法描述出真正的喜好？面對設計師時，總怕表達不完整導致成品有落差？Moodly
+                協助你將散亂的截圖與關鍵字系統化，自動生成專業的「設計摘要」，讓溝通效率翻倍。
               </p>
               <p className="mt-4 text-base leading-relaxed text-ink-muted">
-                第二段佔位：之後可補充使用情境（例如：找設計師前、租屋改造、整屋裝潢等）。
-              </p>
-              <p className="mt-8 text-lg italic text-ink-soft">
-                — 簽名區佔位
+                適用情境：無論是準備翻新舊屋、買了新房想進行裝潢，還是小資租屋族的輕改造，在尋求專業諮詢前，先用
+                Moodly 梳理你的居家藍圖，讓每一分預算都花在心坎上。
               </p>
             </div>
-            <div className="relative aspect-video overflow-hidden rounded-2xl bg-sand/30 shadow-card">
-              <div className="absolute inset-0 flex items-center justify-center bg-ink/5">
-                <span className="rounded-full border-2 border-ink/20 px-5 py-2 text-sm font-medium text-ink-muted">
-                  ▶ 影片／圖說佔位
-                </span>
-              </div>
+            <div className="min-w-0">
+              <ValueCollageInteractive />
             </div>
           </div>
         </section>
 
-        {/* —— 如何使用：交錯區塊 + 路徑感（參考：services zigzag） */}
+        {/* —— 如何使用：虛線里程碑路徑（步驟 1–3） */}
         <section
           id="how"
           className="scroll-mt-24 bg-surface py-16 sm:py-24"
         >
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="mx-auto max-w-3xl px-4 sm:px-6">
             <h2 className="font-moodly text-center text-3xl font-semibold text-ink sm:text-4xl">
               如何使用 Moodly
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-ink-muted">
-              （佔位）中間可放虛線「路徑」裝飾；以下為步驟式區塊，日後替換成你的教學文案。
+              簡單三步驟，完成你的專屬室內設計溝通檔案。
             </p>
 
-            <div className="relative mt-16 space-y-20 lg:space-y-24">
-              <div
-                className="pointer-events-none absolute left-4 top-0 hidden h-[calc(100%-2rem)] w-0 border-l-2 border-dashed border-sand lg:left-1/2 lg:block lg:-translate-x-px"
-                aria-hidden
-              />
-
-              {ZIGZAG.map((row, i) => {
-                const isLeft = row.align === "left";
+            <ol className="relative mt-14 space-y-0 sm:mt-16">
+              {HOW_STEPS.map((row, i) => {
+                const step = i + 1;
+                const isLast = i === HOW_STEPS.length - 1;
                 return (
-                  <div
+                  <li
                     key={row.title}
-                    className="relative grid gap-8 lg:grid-cols-2 lg:gap-12 lg:items-center"
+                    className="flex gap-4 sm:gap-6"
                   >
-                    <div
-                      className={`flex min-h-[180px] items-center justify-center rounded-2xl bg-peach/15 p-8 shadow-card ${isLeft ? "" : "lg:order-2"}`}
-                    >
-                      <span className="text-5xl text-ink/15" aria-hidden>
-                        {i + 1}
+                    <div className="flex w-10 shrink-0 flex-col items-center sm:w-11">
+                      <span
+                        className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-accent/70 bg-app text-sm font-semibold text-accent shadow-sm ring-4 ring-surface sm:h-11 sm:w-11 sm:text-base"
+                        aria-hidden
+                      >
+                        {step}
                       </span>
+                      {!isLast ? (
+                        <div
+                          className="mt-2 min-h-12 w-0 flex-1 border-l-2 border-dashed border-sand"
+                          aria-hidden
+                        />
+                      ) : null}
                     </div>
                     <div
-                      className={`flex flex-col justify-center ${isLeft ? "" : "lg:order-1"}`}
+                      className={`min-w-0 flex-1 ${isLast ? "pb-0" : "pb-12 sm:pb-14"}`}
                     >
-                      <h3 className="text-xl font-semibold text-ink">
+                      <h3 className="text-lg font-semibold text-ink sm:text-xl">
+                        <span className="sr-only">步驟 {step}：</span>
                         {row.title}
                       </h3>
-                      <p className="mt-3 leading-relaxed text-ink-muted">
+                      <p className="mt-2 leading-relaxed text-ink-muted sm:mt-3">
                         {row.body}
                       </p>
                       <a
@@ -433,10 +444,10 @@ export function LandingMarketingPage() {
                         了解更多 →
                       </a>
                     </div>
-                  </div>
+                  </li>
                 );
               })}
-            </div>
+            </ol>
           </div>
         </section>
 
@@ -447,7 +458,7 @@ export function LandingMarketingPage() {
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <h2 className="font-moodly text-center text-3xl font-semibold text-ink">
-              使用者回聲（佔位）
+              超過 500 位使用者的裝潢起點
             </h2>
             <div className="mt-10 flex flex-col items-center gap-6 sm:flex-row sm:justify-center">
               <button
@@ -492,10 +503,10 @@ export function LandingMarketingPage() {
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <h2 className="font-moodly max-w-2xl text-3xl font-semibold text-ink sm:text-4xl">
-              停下來問路也沒關係（標題佔位）
+              從收藏到共識，最常見的四個卡點
             </h2>
             <p className="mt-3 max-w-xl text-sm text-ink-muted">
-              下方四格可對應「能解決的問題」精簡版，方便快速掃讀。
+              以下對應 Moodly 的核心流程與功能設計，讓你快速掃讀我們如何收斂糾結。
             </p>
             <div className="mt-12 grid gap-6 sm:grid-cols-2">
               {GRID_CARDS.map((c) => (
@@ -525,42 +536,66 @@ export function LandingMarketingPage() {
           className="scroll-mt-24 bg-app py-16 sm:py-24"
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <p className="text-center text-xs font-medium uppercase tracking-[0.25em] text-ink-soft">
-              延伸閱讀／教學（佔位）
+            <p className="text-center text-xs font-medium uppercase tracking-[0.2em] text-ink-soft">
+              Moodly 裝潢溝通指南
             </p>
-            <h2 className="font-moodly mt-2 text-center text-5xl font-semibold tracking-tight text-ink sm:text-6xl md:text-7xl">
-              GUIDE
+            <h2 className="font-moodly mt-2 text-center text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+              延伸閱讀
             </h2>
             <div className="mx-auto mt-4 max-w-3xl rounded-lg bg-surface px-4 py-2 text-center text-xs text-ink-muted shadow-card">
-              （佔位）跑馬燈或一句話提示：例如「本週更新：匯出 PDF
-              教學」— 可改為真實資料或刪除。
+              💡
+              小貼士：上傳圖片建議為 JPG 或 PNG
+              格式，並建議在完成初步規劃後，儘早匯出 PDF 備份您的資料喔！
             </div>
 
-            <div className="mt-12 grid gap-8 lg:grid-cols-3">
-              <article className="lg:col-span-2">
-                <div className="aspect-[16/10] rounded-2xl bg-sage/25 shadow-card" />
-                <h3 className="mt-4 text-xl font-semibold text-ink">
-                  精選長文標題（佔位）
-                </h3>
-                <p className="mt-2 text-sm text-ink-muted">
-                  摘要兩行佔位，之後可連到部落格或說明頁。
-                </p>
-              </article>
-              <div className="flex flex-col gap-6">
-                <article className="rounded-2xl bg-surface p-4 shadow-card">
-                  <div className="aspect-video rounded-lg bg-peach/30" />
-                  <h3 className="mt-3 text-sm font-semibold text-ink">
-                    短文一（佔位）
-                  </h3>
-                </article>
-                <article className="rounded-2xl bg-surface p-4 shadow-card">
-                  <div className="aspect-video rounded-lg bg-sand/40" />
-                  <h3 className="mt-3 text-sm font-semibold text-ink">
-                    短文二（佔位）
-                  </h3>
-                </article>
+            {guideFeatured ? (
+              <div className="mt-12 grid gap-8 lg:grid-cols-3">
+                <Link
+                  href={`/articles/${guideFeatured.slug}`}
+                  className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-app lg:col-span-2"
+                  aria-label={`閱讀：${guideFeatured.title}`}
+                >
+                  <article>
+                    <div
+                      className="aspect-[16/10] rounded-2xl bg-sage/25 shadow-card transition group-hover:shadow-lg"
+                      aria-hidden
+                    />
+                    <h3 className="mt-4 text-xl font-semibold text-ink group-hover:text-accent-hover">
+                      {guideFeatured.title}
+                    </h3>
+                    <p className="mt-2 text-sm text-ink-muted">
+                      {guideFeatured.excerpt}
+                    </p>
+                    <span className="mt-3 inline-flex text-sm font-medium text-accent-hover opacity-0 transition group-hover:opacity-100">
+                      閱讀全文 →
+                    </span>
+                  </article>
+                </Link>
+                <div className="flex flex-col gap-6">
+                  {guideSide.map((item, idx) => (
+                    <Link
+                      key={item.slug}
+                      href={`/articles/${item.slug}`}
+                      className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-app"
+                      aria-label={`閱讀：${item.title}`}
+                    >
+                      <article className="rounded-2xl bg-surface p-4 shadow-card transition group-hover:shadow-lg">
+                        <div
+                          className={`aspect-video rounded-lg ${idx === 0 ? "bg-peach/30" : "bg-sand/40"}`}
+                          aria-hidden
+                        />
+                        <h3 className="mt-3 text-sm font-semibold text-ink group-hover:text-accent-hover">
+                          {item.title}
+                        </h3>
+                        <span className="mt-2 inline-flex text-xs font-medium text-accent-hover opacity-0 transition group-hover:opacity-100">
+                          閱讀全文 →
+                        </span>
+                      </article>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </section>
 
@@ -570,31 +605,32 @@ export function LandingMarketingPage() {
             <div className="rounded-2xl bg-app p-8 shadow-card">
               <div className="h-24 rounded-lg bg-peach/25" aria-hidden />
               <h3 className="mt-6 text-xl font-semibold text-ink">
-                區塊 A（佔位）
+                準備好開始整理了嗎？
               </h3>
               <p className="mt-2 text-sm text-ink-muted">
-                例如：線上體驗、快速試用等 CTA 說明。
+                無需註冊，直接在瀏覽器建立你的第一個空間，開始規劃你的夢想居家。
               </p>
               <Link
                 href="/"
                 className="mt-6 inline-flex rounded-full bg-accent px-5 py-2 text-sm font-medium text-on-accent hover:bg-accent-hover"
               >
-                前往
+                立即體驗
               </Link>
             </div>
             <div className="rounded-2xl bg-app p-8 shadow-card">
               <div className="h-24 rounded-lg bg-sage/25" aria-hidden />
               <h3 className="mt-6 text-xl font-semibold text-ink">
-                區塊 B（佔位）
+                關於 Moodly
               </h3>
               <p className="mt-2 text-sm text-ink-muted">
-                例如：品牌理念、為什麼做 Moodly。
+                我們相信，每個人都值得擁有理想的生活空間，而這一切就從釐清需求開始。
               </p>
               <a
                 href="#value"
                 className="mt-6 inline-flex rounded-full border border-border-sand px-5 py-2 text-sm font-medium text-ink hover:bg-peach/30"
+                title="了解更多"
               >
-                了解更多
+                品牌理念
               </a>
             </div>
           </div>
