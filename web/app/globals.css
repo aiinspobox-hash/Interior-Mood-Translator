@@ -58,6 +58,8 @@
   /* 英文為主：Helvetica Neue（macOS／iOS）；其餘平台退回 Helvetica / Arial */
   --font-sans: "Helvetica Neue", Helvetica, Arial, ui-sans-serif, sans-serif;
   --font-mono: var(--font-geist-mono);
+  /* layout 注入 --font-playfair-display；首頁 h1 使用 utility font-moodly */
+  --font-moodly: var(--font-playfair-display), ui-serif, Georgia, serif;
 }
 
 html {

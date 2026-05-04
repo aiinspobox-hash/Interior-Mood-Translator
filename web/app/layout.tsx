@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono } from "next/font/google";
+import { Geist_Mono, Playfair_Display } from "next/font/google";
 import { PersistGate } from "@/components/PersistGate";
 import "./globals.css";
 
@@ -8,10 +8,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const moodlyDisplay = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["600"],
+  variable: "--font-playfair-display",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "裝潢需求翻譯器 · Interior Mood Translator",
+  title: "Moodly · 居家靈感與設計摘要",
   description:
-    "把模糊的裝潢想法整理成結構化需求、moodboard 與可分享的設計摘要（MVP）。",
+    "建立空間、整理文字需求與標籤、收集靈感圖與家具意向，預覽 moodboard 並匯出 PDF 設計摘要。",
 };
 
 /** 避免系統深色模式讓瀏覽器預設底色呈現為深色 */
@@ -27,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh-Hant"
-      className={`${geistMono.variable} h-full bg-app text-ink antialiased`}
+      className={`${geistMono.variable} ${moodlyDisplay.variable} h-full bg-app text-ink antialiased`}
     >
       <body className="flex min-h-full flex-col bg-app text-ink antialiased">
         <PersistGate>{children}</PersistGate>

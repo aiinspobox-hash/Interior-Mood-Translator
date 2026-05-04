@@ -1,14 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { ExportAllRoomsPdfButton } from "@/components/home/ExportAllRoomsPdfButton";
+import { SortableRoomList } from "@/components/home/SortableRoomList";
 import { SPACE_PRESETS } from "@/lib/constants";
+import { orderedRooms } from "@/lib/roomOrder";
 import { useRoomStore } from "@/lib/store";
 
 export function HomeClient() {
   const router = useRouter();
   const rooms = useRoomStore((s) => s.rooms);
+  const roomOrder = useRoomStore((s) => s.roomOrder);
+  const setRoomOrder = useRoomStore((s) => s.setRoomOrder);
   const addRoom = useRoomStore((s) => s.addRoom);
   const [name, setName] = useState("");
   const [preset, setPreset] = useState<string>(SPACE_PRESETS[0]);
@@ -21,28 +25,37 @@ export function HomeClient() {
     router.push(`/room/${id}`);
   }
 
-  const sorted = [...rooms].sort((a, b) => b.updatedAt - a.updatedAt);
+  const sorted = useMemo(
+    () => orderedRooms(rooms, roomOrder),
+    [rooms, roomOrder],
+  );
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
       <header className="mb-10">
         <p className="text-sm font-medium text-accent-hover">
-          Interior Mood Translator · MVP
+          居家靈感 · 設計摘要
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink">
-          裝潢需求翻譯器
+        <h1 className="font-moodly mt-2 text-3xl font-semibold tracking-[0.01em] text-ink">
+          Moodly
         </h1>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-muted">
           建立空間、收集靈感圖與標籤，預覽 moodboard 並匯出 PDF。
-          第一版資料儲存在此瀏覽器本機，清除網站資料會一併刪除。
+          資料儲存在此瀏覽器本機，清除網站資料會一併刪除。
         </p>
       </header>
 
       <section className="rounded-2xl border border-border-warm bg-surface p-6 shadow-card">
         <h2 className="text-base font-semibold text-ink">新增空間</h2>
-        <form onSubmit={create} className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-end">
+        <form
+          onSubmit={create}
+          className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-end"
+        >
           <div className="flex-1 space-y-1">
-            <label htmlFor="preset" className="text-xs font-medium text-ink-soft">
+            <label
+              htmlFor="preset"
+              className="text-xs font-medium text-ink-soft"
+            >
               空間類型
             </label>
             <select
@@ -86,28 +99,13 @@ export function HomeClient() {
             尚無空間，請先新增一個開始整理靈感。
           </p>
         ) : (
-          <ul className="mt-4 space-y-3">
-            {sorted.map((r) => (
-              <li key={r.id}>
-                <Link
-                  href={`/room/${r.id}`}
-                  className="flex items-center justify-between rounded-xl border border-border-warm bg-surface px-4 py-4 shadow-card transition hover:border-sand hover:bg-peach/30"
-                >
-                  <div>
-                    <p className="font-medium text-ink">{r.name}</p>
-                    <p className="mt-1 text-xs text-ink-soft">
-                      {r.images.length} 張圖 ·{" "}
-                      {new Date(r.updatedAt).toLocaleString("zh-TW")}
-                    </p>
-                  </div>
-                  <span className="text-sm font-medium text-accent-hover">
-                    編輯 →
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <SortableRoomList rooms={sorted} onReorder={setRoomOrder} />
         )}
+        {sorted.length > 0 ? (
+          <div className="mt-6 flex justify-center">
+            <ExportAllRoomsPdfButton rooms={sorted} />
+          </div>
+        ) : null}
       </section>
     </div>
   );

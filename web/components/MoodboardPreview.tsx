@@ -17,6 +17,10 @@ function hashSrcQuick(src: string): number {
 
 type Props = {
   room: Room;
+  /** 匯出截圖用 DOM id；預設與單一空間頁相同 */
+  exportElementId?: string;
+  /** 是否顯示「Moodboard 預覽」標題；首頁離屏批次匯出可設為 false */
+  showHeading?: boolean;
 };
 
 /** 供螢幕預覽與 PDF 匯出共用版面的 id */
@@ -24,7 +28,12 @@ export const DESIGN_BRIEF_EXPORT_ID = "design-brief-export";
 
 const PALETTE_COUNT = 5;
 
-export function MoodboardPreview({ room }: Props) {
+export function MoodboardPreview({
+  room,
+  exportElementId,
+  showHeading = true,
+}: Props) {
+  const exportId = exportElementId ?? DESIGN_BRIEF_EXPORT_ID;
   const furnitureList = room.furniture ?? [];
   const shownFurniture = furnitureList.slice(0, MOODBOARD_MAX_FURNITURE);
   const furnitureExtras = furnitureList.length - shownFurniture.length;
@@ -49,14 +58,23 @@ export function MoodboardPreview({ room }: Props) {
     const sources = room.images
       .slice(0, MOODBOARD_MAX_IMAGES)
       .map((img) => img.src);
+    let cancelled = false;
+
     if (sources.length === 0) {
-      setPaletteHex([]);
-      setPaletteLoading(false);
-      return;
+      Promise.resolve().then(() => {
+        if (!cancelled) {
+          setPaletteHex([]);
+          setPaletteLoading(false);
+        }
+      });
+      return () => {
+        cancelled = true;
+      };
     }
 
-    let cancelled = false;
-    setPaletteLoading(true);
+    Promise.resolve().then(() => {
+      if (!cancelled) setPaletteLoading(true);
+    });
 
     void extractPaletteFromImageSources(sources, PALETTE_COUNT).then(
       (colors) => {
@@ -70,21 +88,17 @@ export function MoodboardPreview({ room }: Props) {
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- imagePaletteKey 已指紋化 room.images
   }, [imagePaletteKey]);
 
-  return (
-    <section className="space-y-4">
-      <h2 className="text-base font-semibold text-ink">
-        Moodboard 預覽（匯出 PDF 使用此區）
-      </h2>
-
-      <div
-        id={DESIGN_BRIEF_EXPORT_ID}
-        className="rounded-2xl border border-border-warm bg-surface p-6 text-ink shadow-card"
-      >
+  const card = (
+    <div
+      id={exportId}
+      className="rounded-2xl border border-border-warm bg-surface p-6 text-ink shadow-card"
+    >
         <header className="border-b border-border-warm pb-4">
           <p className="text-xs uppercase tracking-wider text-ink-soft">
-            Interior Mood Translator · Design Brief
+            Moodly · Design Brief
           </p>
           <h3 className="mt-1 text-2xl font-semibold tracking-tight text-ink">
             {room.name}
@@ -214,7 +228,19 @@ export function MoodboardPreview({ room }: Props) {
           <p>Design summary — for discussion purposes only.</p>
           <p className="mt-1">設計摘要 · 供討論使用。</p>
         </footer>
-      </div>
+    </div>
+  );
+
+  if (!showHeading) {
+    return <div className="w-full max-w-3xl shrink-0">{card}</div>;
+  }
+
+  return (
+    <section className="space-y-4">
+      <h2 className="text-base font-semibold text-ink">
+        Moodboard 預覽（匯出 PDF 使用此區）
+      </h2>
+      {card}
     </section>
   );
 }
