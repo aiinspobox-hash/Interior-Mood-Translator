@@ -45,7 +45,7 @@ export function HomeClient() {
         </p>
       </header>
 
-      <section className="rounded-2xl border border-border-warm bg-surface p-6 shadow-card">
+      <section className="rounded-2xl bg-surface p-6 shadow-card">
         <h2 className="text-base font-semibold text-ink">新增空間</h2>
         <form
           onSubmit={create}
@@ -95,7 +95,7 @@ export function HomeClient() {
       <section className="mt-12">
         <h2 className="text-base font-semibold text-ink">我的空間</h2>
         {sorted.length === 0 ? (
-          <p className="mt-4 rounded-xl border border-dashed border-border-warm bg-peach/25 py-12 text-center text-sm text-ink-soft">
+          <p className="mt-4 rounded-xl bg-peach/25 py-12 text-center text-sm text-ink-soft shadow-card">
             尚無空間，請先新增一個開始整理靈感。
           </p>
         ) : (

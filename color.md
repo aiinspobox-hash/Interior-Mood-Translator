@@ -1,24 +1,41 @@
 🎨 🎯 Color System（可直接複製）
+
+實作以 `web/app/globals.css` 的 `:root` / `@theme` 為準；本文件與程式碼同步（略暖紙感、柔化墨色，偏 **approachable sophistication**）。
+
 🟡 Primary（主色）
-Cream White
-#FFF6E9
+
+Warm Paper（App 底）
+
+#FAF7F2
 
 👉 用途：
 
 整體背景（App background）
 大區塊底色
 空間留白基底
+
+（若需更強奶油感，可當作變體參考：舊版 Cream `#FFF6E9`，現已不當作預設 app 色。）
+
 🧡 Secondary（輔助暖色）
+
 Soft Peach
+
 #F7D9C4
 
 👉 用途：
 
-Card 背景
+Card 背景（與 Surface 搭配）
 Section 區塊
 UI 分區
+
+Sand（邊框／次要按鈕邊）
+
+#E7C9A9
+
 🌿 Balance Green（平衡冷調）
+
 Muted Sage Green
+
 #C9D6C4
 
 👉 用途：
@@ -27,10 +44,19 @@ Info block
 Tag / label
 輕量裝飾背景
 增加「高級感」
+
+Sage 上文字（深綠灰）
+
+#2F3A33
+
 ✨ Accent（重點色 / CTA）
+
 Honey Gold
+
 #F2B84B
+
 Hover / Dark Accent
+
 #E6A93D
 
 👉 用途：
@@ -38,8 +64,11 @@ Hover / Dark Accent
 主按鈕（CTA）
 hover 狀態
 highlight 重點資訊
+
 💗 Optional Cute Accent（可選）
+
 Soft Pink
+
 #F6B8C4
 
 👉 用途：
@@ -48,31 +77,59 @@ icon 點綴
 badge
 可愛提示
 （不要大面積使用）
+
+🖋️ 文字色（Ink）
+
+Primary
+
+#2E2C29
+
+Muted
+
+#5A5651
+
+Soft / 輔助說明
+
+#7F7A74
+
 🧩 UI 元件建議色碼（直接用）
+
 🔘 Primary Button（最重要按鈕）
+
 bg: #F2B84B
 hover: #E6A93D
 text: #FFFFFF
 radius: 999px
+
 ⚪ Secondary Button
-bg: #FFF6E9
+
+bg: #FAF7F2
 border: #E7C9A9
-text: #333333
 hover bg: #F7D9C4
+
 🪟 Card（卡片）
-bg: #FFFFFF
-shadow: rgba(0,0,0,0.06)
+
+bg（Surface）: #FFFDF9
+
+shadow（與 `--shadow-card` 一致）:
+
+`0 2px 16px rgba(46, 43, 40, 0.07), 0 1px 2px rgba(46, 43, 40, 0.04)`
+
 border: #F7D9C4
 
 或更溫暖版本：
 
 bg: #F7D9C4
-shadow: soft
+shadow: 同上（暖色調雙層）
+
 📦 Section Block（區塊背景）
-light warm: #FFF6E9
+
+light warm: #FAF7F2
 warm accent: #F7D9C4
 soft contrast: #C9D6C4（小區塊用）
+
 🏷️ Tag / Label
+
 bg: #C9D6C4
 text: #2F3A33
 
@@ -80,11 +137,16 @@ text: #2F3A33
 
 bg: #F6B8C4
 text: #4A3A3A
+
 🔗 Link / Hover
-default text: #333333
+
+default text: #2E2C29
 hover: #F2B84B
+
 🧠 設計使用邏輯（幫你避免踩雷）
-70%：#FFF6E9（空間感）
+
+70%：#FAF7F2（空間感）
 20%：#F7D9C4 / #E7C9A9（溫度）
 10%：#F2B84B（注意力）
 少量：#C9D6C4（質感平衡）
+卡片／浮起區塊優先 #FFFDF9 + 上列 shadow，避免整頁過白或過平

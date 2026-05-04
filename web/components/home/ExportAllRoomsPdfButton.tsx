@@ -86,7 +86,7 @@ export function ExportAllRoomsPdfButton({ rooms }: Props) {
           type="button"
           disabled={busy}
           onClick={() => void exportAll()}
-          className="inline-flex w-fit items-center justify-center rounded-full border border-border-sand bg-surface px-5 py-2.5 text-sm font-medium text-ink shadow-card transition hover:border-sand hover:bg-peach/40 disabled:opacity-60"
+          className="inline-flex w-fit items-center justify-center rounded-full bg-surface px-5 py-2.5 text-sm font-medium text-ink shadow-card transition hover:bg-peach/40 hover:shadow-lg disabled:opacity-60"
         >
           {busy ? "產生 PDF 中…" : "匯出全部空間 PDF"}
         </button>

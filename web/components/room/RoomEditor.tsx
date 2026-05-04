@@ -121,7 +121,7 @@ export function RoomEditor({ roomId }: Props) {
           />
         </section>
 
-        <section className="grid gap-8 rounded-2xl border border-border-warm bg-peach/35 p-6">
+        <section className="grid gap-8 rounded-2xl bg-peach/35 p-6 shadow-card">
           <TagEditor
             label="風格／關鍵字標籤"
             placeholder="輸入後按 Enter 或點「新增」"

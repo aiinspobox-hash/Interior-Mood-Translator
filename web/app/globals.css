@@ -7,19 +7,20 @@
 */
 
 :root {
-  --background: #fff6e9;
-  --foreground: #333333;
+  /* 略暖紙感底 + 柔化墨色：親近但不失層次 */
+  --background: #faf7f2;
+  --foreground: #2e2c29;
 
   /* 與下方 @theme 一致，供自訂 CSS 與 var() 使用 */
-  --color-app: #fff6e9;
-  --color-surface: #ffffff;
+  --color-app: #faf7f2;
+  --color-surface: #fffdf9;
   --color-peach: #f7d9c4;
   --color-sand: #e7c9a9;
   --color-sage: #c9d6c4;
   --color-sage-ink: #2f3a33;
-  --color-ink: #333333;
-  --color-ink-muted: #5c5c5c;
-  --color-ink-soft: #737373;
+  --color-ink: #2e2c29;
+  --color-ink-muted: #5a5651;
+  --color-ink-soft: #7f7a74;
   --color-border-warm: #f7d9c4;
   --color-border-sand: #e7c9a9;
   --color-accent: #f2b84b;
@@ -29,18 +30,27 @@
   --color-pink-soft: #f6b8c4;
   --color-danger: #b91c1c;
   --color-danger-surface: #fff5f5;
+
+  /* 捲軸：細軌 + 暖色滑塊（與 peach / sand 一致） */
+  --scrollbar-track: color-mix(in srgb, var(--color-peach) 22%, transparent);
+  --scrollbar-thumb: color-mix(in srgb, var(--color-sand) 82%, var(--color-ink) 10%);
+  --scrollbar-thumb-hover: color-mix(
+    in srgb,
+    var(--color-accent) 42%,
+    var(--color-sand) 58%
+  );
 }
 
 @theme inline {
-  --color-app: #fff6e9;
-  --color-surface: #ffffff;
+  --color-app: #faf7f2;
+  --color-surface: #fffdf9;
   --color-peach: #f7d9c4;
   --color-sand: #e7c9a9;
   --color-sage: #c9d6c4;
   --color-sage-ink: #2f3a33;
-  --color-ink: #333333;
-  --color-ink-muted: #5c5c5c;
-  --color-ink-soft: #737373;
+  --color-ink: #2e2c29;
+  --color-ink-muted: #5a5651;
+  --color-ink-soft: #7f7a74;
   --color-border-warm: #f7d9c4;
   --color-border-sand: #e7c9a9;
   --color-accent: #f2b84b;
@@ -51,34 +61,84 @@
   --color-danger: #b91c1c;
   --color-danger-surface: #fff5f5;
 
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 2px 16px rgba(46, 43, 40, 0.07), 0 1px 2px rgba(46, 43, 40, 0.04);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* 英文為主：Helvetica Neue（macOS／iOS）；其餘平台退回 Helvetica / Arial */
-  --font-sans: "Helvetica Neue", Helvetica, Arial, ui-sans-serif, sans-serif;
+  /* layout 注入 --font-dm-sans；中文維持 PingFang / Noto */
+  --font-sans: var(--font-dm-sans), "Helvetica Neue", Helvetica, Arial,
+    ui-sans-serif, "PingFang TC", "Noto Sans TC", sans-serif;
   --font-mono: var(--font-geist-mono);
-  /* layout 注入 --font-playfair-display；首頁 h1 使用 utility font-moodly */
+  /* layout 注入 --font-playfair-display；標題用 font-moodly */
   --font-moodly: var(--font-playfair-display), ui-serif, Georgia, serif;
 }
 
 html {
   color-scheme: light;
-  background-color: #fff6e9;
+  background-color: var(--color-app);
 }
 
 body {
   min-height: 100%;
-  background-color: #fff6e9;
-  color: #333333;
-  font-family: "Helvetica Neue", Helvetica, Arial, ui-sans-serif, sans-serif,
-    "PingFang TC", "Noto Sans TC";
+  background-color: var(--color-app);
+  color: var(--color-ink);
+  font-feature-settings: "kern" 1, "liga" 1;
+  letter-spacing: 0.01em;
+  line-height: 1.55;
 }
 
 /*
   Preflight 在同層 @layer base；把可點擊元素的游標放在 base 裡，才不會被層疊順序蓋掉（Mac Safari 尤其明顯）。
 */
 @layer base {
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+
+  /* Chromium / Safari / Edge — 圓角滑塊 + 軌道留白 */
+  *::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+
+  *::-webkit-scrollbar-track {
+    margin-block: 6px;
+    margin-inline: 2px;
+    background: var(--scrollbar-track);
+    border-radius: 9999px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background: linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--color-peach) 55%, var(--scrollbar-thumb)),
+      var(--scrollbar-thumb)
+    );
+    background-clip: padding-box;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--color-accent) 35%, var(--scrollbar-thumb-hover)),
+      var(--scrollbar-thumb-hover)
+    );
+    background-clip: padding-box;
+  }
+
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-peach) 70%, white);
+    color: var(--color-ink);
+  }
+
   a[href]:not([aria-disabled="true"]) {
     cursor: pointer;
   }

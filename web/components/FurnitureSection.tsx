@@ -127,7 +127,7 @@ export function FurnitureSection({ items, onAdd, onRemove }: Props) {
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-border-warm bg-peach/40 p-4">
+        <div className="rounded-xl bg-peach/40 p-4 shadow-card">
           <p className="mb-2 text-xs font-medium text-ink-muted">本機上傳</p>
           <input
             ref={inputRef}
@@ -137,7 +137,7 @@ export function FurnitureSection({ items, onAdd, onRemove }: Props) {
             onChange={(e) => void onPickFile(e.target.files)}
           />
         </div>
-        <div className="rounded-xl border border-border-warm bg-peach/40 p-4">
+        <div className="rounded-xl bg-peach/40 p-4 shadow-card">
           <p className="mb-2 text-xs font-medium text-ink-muted">圖片網址</p>
           <input
             value={urlDraft}
@@ -157,7 +157,7 @@ export function FurnitureSection({ items, onAdd, onRemove }: Props) {
         </div>
       </div>
 
-      <div className="rounded-xl border border-border-warm bg-surface p-4">
+      <div className="rounded-xl bg-surface p-4 shadow-card">
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <label className="text-xs font-medium text-ink-muted">家具名稱</label>
@@ -187,7 +187,7 @@ export function FurnitureSection({ items, onAdd, onRemove }: Props) {
             <img
               src={pendingSrc}
               alt=""
-              className="h-24 w-24 shrink-0 rounded-lg border border-border-warm object-cover"
+              className="h-24 w-24 shrink-0 rounded-lg object-cover shadow-sm"
               crossOrigin="anonymous"
             />
             <div className="flex flex-col gap-2 text-sm">
@@ -226,13 +226,13 @@ export function FurnitureSection({ items, onAdd, onRemove }: Props) {
           {items.map((f) => (
             <li
               key={f.id}
-              className="flex gap-3 overflow-hidden rounded-lg border border-border-warm bg-peach/30 p-3"
+              className="flex gap-3 overflow-hidden rounded-lg bg-peach/30 p-3 shadow-card"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={f.imageSrc}
                 alt=""
-                className="h-20 w-20 shrink-0 rounded-md border border-border-warm object-cover"
+                className="h-20 w-20 shrink-0 rounded-md object-cover shadow-sm"
                 crossOrigin="anonymous"
               />
               <div className="min-w-0 flex-1">

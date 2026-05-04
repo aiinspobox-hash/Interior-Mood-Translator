@@ -94,9 +94,9 @@ export function MoodboardPreview({
   const card = (
     <div
       id={exportId}
-      className="rounded-2xl border border-border-warm bg-surface p-6 text-ink shadow-card"
+      className="rounded-2xl bg-surface p-6 text-ink shadow-card"
     >
-        <header className="border-b border-border-warm pb-4">
+        <header className="pb-4">
           <p className="text-xs uppercase tracking-wider text-ink-soft">
             Moodly · Design Brief
           </p>
@@ -145,7 +145,7 @@ export function MoodboardPreview({
                   {shown.map((img) => (
                     <div
                       key={img.id}
-                      className="overflow-hidden rounded-lg border border-border-warm bg-peach/20"
+                      className="overflow-hidden rounded-lg bg-peach/20 shadow-sm"
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -172,7 +172,7 @@ export function MoodboardPreview({
                   {shownFurniture.map((f) => (
                     <div
                       key={f.id}
-                      className="overflow-hidden rounded-lg border border-border-warm bg-peach/20"
+                      className="overflow-hidden rounded-lg bg-peach/20 shadow-sm"
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -215,7 +215,7 @@ export function MoodboardPreview({
               {paletteHex.map((hex) => (
                 <span
                   key={hex}
-                  className="h-12 w-12 shrink-0 rounded-full border border-white shadow-md ring-1 ring-black/[0.06]"
+                  className="h-12 w-12 shrink-0 rounded-full shadow-md ring-2 ring-white ring-offset-1 ring-offset-surface"
                   style={{ backgroundColor: hex }}
                   title={hex.toUpperCase()}
                 />
@@ -224,7 +224,7 @@ export function MoodboardPreview({
           )}
         </div>
 
-        <footer className="mt-8 border-t border-border-warm pt-4 text-[10px] text-ink-soft">
+        <footer className="mt-8 pt-4 text-[10px] text-ink-soft">
           <p>Design summary — for discussion purposes only.</p>
           <p className="mt-1">設計摘要 · 供討論使用。</p>
         </footer>

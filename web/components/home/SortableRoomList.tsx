@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Fragment, useCallback, useState } from "react";
 import { reorderIds } from "@/lib/roomOrder";
+import { useRoomStore } from "@/lib/store";
 import type { Room } from "@/lib/types";
 
 type Props = {
@@ -34,6 +35,7 @@ function sameOrder(a: string[], b: string[]) {
 }
 
 export function SortableRoomList({ rooms, onReorder }: Props) {
+  const removeRoom = useRoomStore((s) => s.removeRoom);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [overRowIndex, setOverRowIndex] = useState<number | null>(null);
   const [overGapInsertBefore, setOverGapInsertBefore] = useState<number | null>(
@@ -126,7 +128,7 @@ export function SortableRoomList({ rooms, onReorder }: Props) {
             }
           >
             <div
-              className={`flex items-stretch gap-0 rounded-xl border border-border-warm bg-surface shadow-card transition hover:border-sand hover:bg-peach/30 ${draggingId === r.id ? "opacity-50" : ""}`}
+              className={`flex items-stretch gap-0 rounded-xl bg-surface shadow-card transition hover:bg-peach/30 hover:shadow-lg ${draggingId === r.id ? "opacity-50" : ""}`}
             >
               <button
                 type="button"
@@ -137,7 +139,7 @@ export function SortableRoomList({ rooms, onReorder }: Props) {
                   setDraggingId(r.id);
                 }}
                 onDragEnd={endDrag}
-                className="flex shrink-0 cursor-grab touch-none items-center border-r border-border-warm px-2 text-ink-soft transition hover:bg-peach/25 hover:text-ink active:cursor-grabbing"
+                className="flex shrink-0 cursor-grab touch-none items-center rounded-l-xl bg-peach/15 px-2 text-ink-soft transition hover:bg-peach/25 hover:text-ink active:cursor-grabbing"
                 aria-label={`拖移排序：${r.name}`}
               >
                 <GripIcon />
@@ -157,7 +159,7 @@ export function SortableRoomList({ rooms, onReorder }: Props) {
                   編輯 →
                 </span>
               </Link>
-              <div className="flex shrink-0 flex-col justify-center gap-0.5 border-l border-border-warm py-2 pr-2 pl-1">
+              <div className="flex shrink-0 flex-col justify-center gap-0.5 bg-app/60 py-2 pr-2 pl-1">
                 <button
                   type="button"
                   disabled={index === 0}
@@ -186,28 +188,28 @@ export function SortableRoomList({ rooms, onReorder }: Props) {
                   ↓
                 </button>
               </div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (
+                    !window.confirm(
+                      `確定要刪除「${r.name}」嗎？此空間內的靈感與設定會一併從本機移除，且無法復原。`,
+                    )
+                  ) {
+                    return;
+                  }
+                  removeRoom(r.id);
+                }}
+                className="flex shrink-0 items-center self-stretch rounded-r-xl bg-peach/10 px-3 text-xs font-medium text-danger transition hover:bg-danger-surface"
+                aria-label={`刪除空間：${r.name}`}
+              >
+                刪除
+              </button>
             </div>
           </li>
         </Fragment>
       ))}
-      {rooms.length > 1 ? (
-        <li
-          className="mt-1 flex min-h-10 items-center justify-center rounded-xl border border-dashed border-border-warm bg-peach/10 text-xs text-ink-soft transition hover:border-sand hover:bg-peach/20"
-          onDragOver={(e) => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = "move";
-          }}
-          onDrop={(e) => {
-            e.preventDefault();
-            const fromId = e.dataTransfer.getData("text/plain");
-            const fromIdx = ids.indexOf(fromId);
-            commitInsertBefore(fromIdx, ids.length);
-            endDrag();
-          }}
-        >
-          拖到此處：排至最後
-        </li>
-      ) : null}
     </ul>
   );
 }

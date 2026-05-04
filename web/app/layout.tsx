@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Playfair_Display } from "next/font/google";
+import { DM_Sans, Geist_Mono, Playfair_Display } from "next/font/google";
 import { PersistGate } from "@/components/PersistGate";
 import "./globals.css";
 
@@ -8,9 +8,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+/** 內文：清楚、略帶幾何感，偏 approachable sophistication */
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
+
+/** 標題：保留襯線的精緻感，與 DM Sans 並用 */
 const moodlyDisplay = Playfair_Display({
   subsets: ["latin"],
-  weight: ["600"],
+  weight: ["500", "600", "700"],
   variable: "--font-playfair-display",
   display: "swap",
 });
@@ -34,9 +43,9 @@ export default function RootLayout({
   return (
     <html
       lang="zh-Hant"
-      className={`${geistMono.variable} ${moodlyDisplay.variable} h-full bg-app text-ink antialiased`}
+      className={`${geistMono.variable} ${dmSans.variable} ${moodlyDisplay.variable} h-full bg-app text-ink antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-app text-ink antialiased">
+      <body className="font-sans flex min-h-full flex-col bg-app text-ink antialiased">
         <PersistGate>{children}</PersistGate>
       </body>
     </html>

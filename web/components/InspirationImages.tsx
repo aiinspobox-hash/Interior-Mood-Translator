@@ -104,7 +104,7 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-border-warm bg-peach/40 p-4">
+        <div className="rounded-xl bg-peach/40 p-4 shadow-card">
           <p className="mb-2 text-xs font-medium text-ink-muted">本機上傳</p>
           <input
             ref={inputRef}
@@ -115,7 +115,7 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
             onChange={(e) => void onPickFiles(e.target.files)}
           />
         </div>
-        <div className="rounded-xl border border-border-warm bg-peach/40 p-4">
+        <div className="rounded-xl bg-peach/40 p-4 shadow-card">
           <p className="mb-2 text-xs font-medium text-ink-muted">圖片網址</p>
           <input
             value={urlDraft}
@@ -135,7 +135,7 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
         </div>
       </div>
 
-      <div className="rounded-xl border border-border-warm bg-surface p-4">
+      <div className="rounded-xl bg-surface p-4 shadow-card">
         <label className="text-xs font-medium text-ink-muted">
           來源標記（選填，套用於接下來新增的圖片）
         </label>
@@ -160,7 +160,7 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
           {images.map((img) => (
             <li
               key={img.id}
-              className="group relative overflow-hidden rounded-lg border border-border-warm bg-peach/30"
+              className="group relative overflow-hidden rounded-lg bg-peach/30 shadow-card"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -169,7 +169,7 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
                 className="aspect-square w-full object-cover"
                 crossOrigin="anonymous"
               />
-              <div className="flex items-center justify-between gap-1 border-t border-border-warm bg-surface px-2 py-1 text-[10px] text-ink-muted">
+              <div className="flex items-center justify-between gap-1 bg-surface/95 px-2 py-1 text-[10px] text-ink-muted shadow-[0_-4px_12px_rgba(46,43,40,0.06)]">
                 <span className="truncate">{img.sourceLabel ?? "—"}</span>
                 <button
                   type="button"
