@@ -1,92 +1,98 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import type { TransitionEvent } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ValueCollageInteractive } from "@/components/landing/ValueCollageInteractive";
-import { GUIDE_ARTICLES } from "@/content/guideArticles";
-
-const HERO_SLIDES = [
-  {
-    src: "/landing/hero-1.png",
-    alt: "現代簡約客廳空間，木質與植栽、柔和自然光",
-  },
-  {
-    src: "/landing/hero-2.png",
-    alt: "淺色沙發與木質茶几的客廳，抽象畫與吊燈",
-  },
-  {
-    src: "/landing/hero-3.png",
-    alt: "綠色模組沙發與極簡白牆的明亮起居空間",
-  },
-] as const;
-
-const NAV = [
-  { href: "#value", label: "能為你解決什麼" },
-  { href: "#how", label: "如何使用" },
-  { href: "#voices", label: "使用者回聲" },
-] as const;
-
-const TESTIMONIALS = [
-  {
-    quote:
-      "原本跟設計師雞同鴨講，用了 Moodly 的 PDF 摘要後，對方馬上抓到我要的色調和風格，省下超多溝通時間！",
-    name: "Emily，首購族",
-  },
-  {
-    quote:
-      "我喜歡它的『避免項目』功能，我討厭深色木紋，標註後終於不用再看那些我不喜歡的設計了。",
-    name: "Kevin，租屋改造者",
-  },
-  {
-    quote:
-      "介面很乾淨，匯出的 PDF 很專業，直接存在手機裡去挑家具也很好用。",
-    name: "Sarah，室內設計師客戶",
-  },
-] as const;
-
-const HOW_STEPS = [
-  {
-    title: "建立空間需求",
-    body: "選擇居家類型，填寫生活習慣與避諱材質，定義出屬於你的空間個性。",
-  },
-  {
-    title: "匯入靈感碎片",
-    body: "上傳心動圖片或貼上網址，加入家具意向，讓抽象的想法具象化為視覺圖板。",
-  },
-  {
-    title: "匯出設計摘要",
-    body: "預覽自動排版後的 Moodboard，一鍵轉存 PDF，隨時隨地與設計師精準對頻。",
-  },
-] as const;
-
-const GRID_CARDS = [
-  {
-    title: "靈感雜亂無章",
-    desc: "提供系統化標籤管理，讓你的素材從雜亂變井然。",
-  },
-  {
-    title: "設計需求難言傳",
-    desc: "透過結構化文字欄位，引導你精準描述對生活的期待。",
-  },
-  {
-    title: "溝通落差大",
-    desc: "PDF 設計摘要讓設計師精準掌握視覺偏好，降低來回修圖的風險。",
-  },
-  {
-    title: "圖片整合困難",
-    desc: "透過 API 代抓與 Base64 轉換，無論來源為何，都能整合為統一格式的圖板。",
-  },
-];
+import { getGuideArticles } from "@/content/guideArticles";
+import { useI18n } from "@/contexts/I18nContext";
 
 export function LandingMarketingPage() {
-  const heroN = HERO_SLIDES.length;
+  const { t, locale } = useI18n();
+
+  const heroSlides = useMemo(
+    () => [
+      { src: "/landing/hero-1.png", alt: t("landing.hero.alt1") },
+      { src: "/landing/hero-2.png", alt: t("landing.hero.alt2") },
+      { src: "/landing/hero-3.png", alt: t("landing.hero.alt3") },
+    ],
+    [t],
+  );
+
+  const navItems = useMemo(
+    () => [
+      { href: "#value", label: t("landing.nav.value") },
+      { href: "#how", label: t("landing.nav.how") },
+      { href: "#voices", label: t("landing.nav.voices") },
+    ],
+    [t],
+  );
+
+  const testimonials = useMemo(
+    () => [
+      { quote: t("landing.quote1"), name: t("landing.quote1.name") },
+      { quote: t("landing.quote2"), name: t("landing.quote2.name") },
+      { quote: t("landing.quote3"), name: t("landing.quote3.name") },
+    ],
+    [t],
+  );
+
+  const howSteps = useMemo(
+    () => [
+      { title: t("landing.how1.title"), body: t("landing.how1.body") },
+      { title: t("landing.how2.title"), body: t("landing.how2.body") },
+      { title: t("landing.how3.title"), body: t("landing.how3.body") },
+    ],
+    [t],
+  );
+
+  const gridCards = useMemo(
+    () => [
+      { title: t("landing.g1.title"), desc: t("landing.g1.desc") },
+      { title: t("landing.g2.title"), desc: t("landing.g2.desc") },
+      { title: t("landing.g3.title"), desc: t("landing.g3.desc") },
+      { title: t("landing.g4.title"), desc: t("landing.g4.desc") },
+    ],
+    [t],
+  );
+
+  const footerCols = useMemo(
+    () => [
+      {
+        title: t("landing.footer.p1"),
+        links: [
+          t("landing.footer.f1"),
+          t("landing.footer.f2"),
+          t("landing.footer.f3"),
+        ],
+      },
+      {
+        title: t("landing.footer.p2"),
+        links: [t("landing.footer.r1"), t("landing.footer.r2")],
+      },
+      {
+        title: t("landing.footer.p3"),
+        links: [t("landing.footer.l1"), t("landing.footer.l2")],
+      },
+    ],
+    [t],
+  );
+
+  const guideArticles = useMemo(
+    () => getGuideArticles(locale),
+    [locale],
+  );
+  const [guideFeatured, ...guideSide] = guideArticles;
+
+  const heroN = heroSlides.length;
 
   const heroExtended = useMemo(() => {
-    if (heroN <= 1) return [...HERO_SLIDES];
-    return [HERO_SLIDES[heroN - 1], ...HERO_SLIDES, HERO_SLIDES[0]];
-  }, [heroN]);
+    if (heroN <= 1) return [...heroSlides];
+    return [heroSlides[heroN - 1]!, ...heroSlides, heroSlides[0]!];
+  }, [heroN, heroSlides]);
 
   const heroExtLen = heroExtended.length;
 
@@ -94,8 +100,6 @@ export function LandingMarketingPage() {
   const [heroInstant, setHeroInstant] = useState(false);
   const [tIndex, setTIndex] = useState(0);
   const [navOpen, setNavOpen] = useState(false);
-
-  const [guideFeatured, ...guideSide] = GUIDE_ARTICLES;
 
   /** 軌道索引永遠落在 [0, heroExtLen-1]，避免連點超出無限輪播複製區而讀到 undefined */
   const heroRailSafe = Math.min(
@@ -170,7 +174,7 @@ export function LandingMarketingPage() {
     return () => window.clearInterval(id);
   }, [heroN, heroGo, heroRailIndex]);
 
-  const slide = HERO_SLIDES[heroRealIndex] ?? HERO_SLIDES[0];
+  const slide = heroSlides[heroRealIndex] ?? heroSlides[0];
 
   return (
     <div className="min-h-screen bg-app text-ink">
@@ -181,14 +185,14 @@ export function LandingMarketingPage() {
             href="/landing"
             className="font-moodly text-xl font-semibold tracking-wide text-ink"
           >
-            Moodly
+            {t("common.appName")}
           </Link>
 
           <nav
             className={`absolute left-0 right-0 top-full z-40 flex-col border-b border-border-warm bg-surface px-4 py-3 shadow-card sm:static sm:z-auto sm:flex sm:flex-row sm:items-center sm:gap-8 sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none ${navOpen ? "flex" : "hidden sm:flex"}`}
-            aria-label="主要導覽"
+            aria-label={t("landing.nav.main")}
           >
-            {NAV.map((item) => (
+            {navItems.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
@@ -203,22 +207,23 @@ export function LandingMarketingPage() {
               className="mt-2 rounded-full bg-accent py-2.5 text-center text-sm font-medium text-on-accent sm:mt-0 sm:hidden"
               onClick={() => setNavOpen(false)}
             >
-              開始使用
+              {t("landing.cta.start")}
             </Link>
           </nav>
 
           <div className="flex items-center gap-2">
+            <LanguageSwitcher />
             <Link
               href="/"
               className="hidden rounded-full bg-accent px-4 py-2 text-sm font-medium text-on-accent shadow-card transition hover:bg-accent-hover sm:inline-flex"
             >
-              開始使用
+              {t("landing.cta.start")}
             </Link>
             <button
               type="button"
               className="rounded-lg border border-border-warm p-2 sm:hidden"
               aria-expanded={navOpen}
-              aria-label={navOpen ? "關閉選單" : "開啟選單"}
+              aria-label={navOpen ? t("landing.nav.close") : t("landing.nav.open")}
               onClick={() => setNavOpen((o) => !o)}
             >
               <span className="block h-0.5 w-5 bg-ink" />
@@ -283,30 +288,29 @@ export function LandingMarketingPage() {
             <div className="relative z-10 mx-auto flex min-h-[min(88dvh,920px)] w-full max-w-6xl flex-col justify-center px-4 pb-32 pt-20 sm:px-6 sm:pb-36 sm:pt-24">
               <div className="max-w-xl">
                 <p className="text-sm font-medium text-accent-hover">
-                  居家靈感 · 設計摘要
+                  {t("landing.hero.badge")}
                 </p>
                 <h1
                   id="landing-hero-heading"
                   className="font-moodly mt-3 text-4xl font-semibold leading-tight tracking-[0.02em] text-ink sm:mt-4 sm:text-5xl lg:text-6xl"
                 >
-                  把裝潢靈感，整理成看得懂的 moodboard。
+                  {t("landing.hero.title")}
                 </h1>
                 <p className="mt-4 text-base leading-relaxed text-ink sm:mt-5 sm:text-lg">
-                  讓你的裝潢靈感不再零散。從破碎的收藏，到精準的設計摘要，Moodly
-                  幫你精準傳達對家的所有想像。
+                  {t("landing.hero.sub")}
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link
                     href="/"
                     className="inline-flex rounded-full bg-accent px-6 py-2.5 text-sm font-medium text-on-accent shadow-lg transition hover:bg-accent-hover"
                   >
-                    開始使用
+                    {t("landing.hero.ctaPrimary")}
                   </Link>
                   <a
                     href="#value"
                     className="inline-flex items-center rounded-full border border-ink/25 bg-surface/90 px-6 py-2.5 text-sm font-medium text-ink shadow-md transition hover:border-ink/40 hover:bg-surface"
                   >
-                    了解能幫你什麼
+                    {t("landing.hero.ctaSecondary")}
                   </a>
                 </div>
               </div>
@@ -321,7 +325,7 @@ export function LandingMarketingPage() {
                   <kbd className="rounded border border-white/25 bg-white/10 px-1.5 py-0.5 font-mono text-[0.65rem] text-white">
                     →
                   </kbd>{" "}
-                  切換主視覺
+                  {t("landing.hero.carousel")}
                 </p>
                 <div className="flex items-center gap-3">
                   <button
@@ -329,9 +333,9 @@ export function LandingMarketingPage() {
                     onClick={() => heroGo(-1)}
                     disabled={heroN <= 1}
                     className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40"
-                    aria-label="上一張"
+                    aria-label={t("landing.hero.prevAria")}
                   >
-                    ← 上一張
+                    {t("landing.hero.prev")}
                   </button>
                   <span className="min-w-[3.5rem] text-center text-xs font-medium text-white/90">
                     {heroRealIndex + 1} / {heroN}
@@ -341,9 +345,9 @@ export function LandingMarketingPage() {
                     onClick={() => heroGo(1)}
                     disabled={heroN <= 1}
                     className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40"
-                    aria-label="下一張"
+                    aria-label={t("landing.hero.nextAria")}
                   >
-                    下一張 →
+                    {t("landing.hero.next")}
                   </button>
                 </div>
               </div>
@@ -352,7 +356,7 @@ export function LandingMarketingPage() {
         </section>
 
         {/* —— 信任／背書列（參考：logo strip） */}
-        <section className="bg-surface py-6" aria-label="合作與背書（佔位）">
+        <section className="bg-surface py-6" aria-label={t("landing.trust")}>
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-6 px-4 opacity-60 sm:gap-10 sm:px-6">
             {["Logo A", "Logo B", "Logo C", "Logo D"].map((x) => (
               <div
@@ -373,16 +377,13 @@ export function LandingMarketingPage() {
           <div className="mx-auto grid max-w-6xl min-w-0 gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,4fr)_minmax(0,6fr)] lg:items-center lg:gap-12">
             <div className="min-w-0">
               <h2 className="font-moodly text-3xl font-semibold text-ink sm:text-4xl">
-                把雜亂的靈感，變成設計師一眼就懂的溝通語言。
+                {t("landing.value.title")}
               </h2>
               <p className="mt-4 text-base leading-relaxed text-ink-muted">
-                痛點與對應：你是否收藏了無數張 Pinterest
-                美圖，卻無法描述出真正的喜好？面對設計師時，總怕表達不完整導致成品有落差？Moodly
-                協助你將散亂的截圖與關鍵字系統化，自動生成專業的「設計摘要」，讓溝通效率翻倍。
+                {t("landing.value.p1")}
               </p>
               <p className="mt-4 text-base leading-relaxed text-ink-muted">
-                適用情境：無論是準備翻新舊屋、買了新房想進行裝潢，還是小資租屋族的輕改造，在尋求專業諮詢前，先用
-                Moodly 梳理你的居家藍圖，讓每一分預算都花在心坎上。
+                {t("landing.value.p2")}
               </p>
             </div>
             <div className="min-w-0">
@@ -398,16 +399,16 @@ export function LandingMarketingPage() {
         >
           <div className="mx-auto max-w-3xl px-4 sm:px-6">
             <h2 className="font-moodly text-center text-3xl font-semibold text-ink sm:text-4xl">
-              如何使用 Moodly
+              {t("landing.how.title")}
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-ink-muted">
-              簡單三步驟，完成你的專屬室內設計溝通檔案。
+              {t("landing.how.sub")}
             </p>
 
             <ol className="relative mt-14 space-y-0 sm:mt-16">
-              {HOW_STEPS.map((row, i) => {
+              {howSteps.map((row, i) => {
                 const step = i + 1;
-                const isLast = i === HOW_STEPS.length - 1;
+                const isLast = i === howSteps.length - 1;
                 return (
                   <li
                     key={row.title}
@@ -431,7 +432,9 @@ export function LandingMarketingPage() {
                       className={`min-w-0 flex-1 ${isLast ? "pb-0" : "pb-12 sm:pb-14"}`}
                     >
                       <h3 className="text-lg font-semibold text-ink sm:text-xl">
-                        <span className="sr-only">步驟 {step}：</span>
+                        <span className="sr-only">
+                          {t("landing.how.stepLabel", { step })}
+                        </span>
                         {row.title}
                       </h3>
                       <p className="mt-2 leading-relaxed text-ink-muted sm:mt-3">
@@ -441,7 +444,7 @@ export function LandingMarketingPage() {
                         href="#guide"
                         className="mt-4 inline-flex w-fit text-sm font-medium text-accent-hover underline-offset-4 hover:underline"
                       >
-                        了解更多 →
+                        {t("landing.how.more")}
                       </a>
                     </div>
                   </li>
@@ -458,25 +461,25 @@ export function LandingMarketingPage() {
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <h2 className="font-moodly text-center text-3xl font-semibold text-ink">
-              超過 500 位使用者的裝潢起點
+              {t("landing.voices.title")}
             </h2>
             <div className="mt-10 flex flex-col items-center gap-6 sm:flex-row sm:justify-center">
               <button
                 type="button"
                 className="rounded-full bg-surface px-4 py-2 text-sm shadow-card transition hover:shadow-lg"
-                aria-label="上一則"
+                aria-label={t("landing.voices.prev")}
                 onClick={() =>
-                  setTIndex((i) => (i - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)
+                  setTIndex((i) => (i - 1 + testimonials.length) % testimonials.length)
                 }
               >
                 ←
               </button>
               <blockquote className="max-w-xl rounded-2xl bg-surface px-8 py-6 text-center shadow-card">
                 <p className="text-lg leading-relaxed text-ink">
-                  「{TESTIMONIALS[tIndex].quote}」
+                  「{testimonials[tIndex]!.quote}」
                 </p>
                 <footer className="mt-4 text-sm font-medium text-ink-soft">
-                  — {TESTIMONIALS[tIndex].name}
+                  — {testimonials[tIndex]!.name}
                 </footer>
                 <p className="mt-2 text-amber-600" aria-hidden>
                   ★★★★★
@@ -485,9 +488,9 @@ export function LandingMarketingPage() {
               <button
                 type="button"
                 className="rounded-full bg-surface px-4 py-2 text-sm shadow-card transition hover:shadow-lg"
-                aria-label="下一則"
+                aria-label={t("landing.voices.next")}
                 onClick={() =>
-                  setTIndex((i) => (i + 1) % TESTIMONIALS.length)
+                  setTIndex((i) => (i + 1) % testimonials.length)
                 }
               >
                 →
@@ -503,13 +506,13 @@ export function LandingMarketingPage() {
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <h2 className="font-moodly max-w-2xl text-3xl font-semibold text-ink sm:text-4xl">
-              從收藏到共識，最常見的四個卡點
+              {t("landing.grid.title")}
             </h2>
             <p className="mt-3 max-w-xl text-sm text-ink-muted">
-              以下對應 Moodly 的核心流程與功能設計，讓你快速掃讀我們如何收斂糾結。
+              {t("landing.grid.sub")}
             </p>
             <div className="mt-12 grid gap-6 sm:grid-cols-2">
-              {GRID_CARDS.map((c) => (
+              {gridCards.map((c) => (
                 <div
                   key={c.title}
                   className="group rounded-2xl bg-app p-6 shadow-card transition hover:bg-peach/20 hover:shadow-lg"
@@ -521,9 +524,6 @@ export function LandingMarketingPage() {
                   <p className="mt-2 text-sm leading-relaxed text-ink-muted">
                     {c.desc}
                   </p>
-                  <span className="mt-4 inline-flex text-sm font-medium text-accent-hover group-hover:underline">
-                    查看 →
-                  </span>
                 </div>
               ))}
             </div>
@@ -537,15 +537,13 @@ export function LandingMarketingPage() {
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <p className="text-center text-xs font-medium uppercase tracking-[0.2em] text-ink-soft">
-              Moodly 裝潢溝通指南
+              {t("landing.guide.kicker")}
             </p>
             <h2 className="font-moodly mt-2 text-center text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
-              延伸閱讀
+              {t("landing.guide.title")}
             </h2>
             <div className="mx-auto mt-4 max-w-3xl rounded-lg bg-surface px-4 py-2 text-center text-xs text-ink-muted shadow-card">
-              💡
-              小貼士：上傳圖片建議為 JPG 或 PNG
-              格式，並建議在完成初步規劃後，儘早匯出 PDF 備份您的資料喔！
+              💡 {t("landing.guide.tip")}
             </div>
 
             {guideFeatured ? (
@@ -553,21 +551,30 @@ export function LandingMarketingPage() {
                 <Link
                   href={`/articles/${guideFeatured.slug}`}
                   className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-app lg:col-span-2"
-                  aria-label={`閱讀：${guideFeatured.title}`}
+                  aria-label={t("landing.guide.readAria", {
+                    title: guideFeatured.title,
+                  })}
                 >
                   <article>
-                    <div
-                      className="aspect-[16/10] rounded-2xl bg-sage/25 shadow-card transition group-hover:shadow-lg"
-                      aria-hidden
-                    />
+                    <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-sage/25 shadow-card transition group-hover:shadow-lg">
+                      {guideFeatured.coverImage ? (
+                        <Image
+                          src={guideFeatured.coverImage}
+                          alt={guideFeatured.title}
+                          fill
+                          className="object-cover"
+                          sizes="(min-width: 1024px) 66vw, 100vw"
+                        />
+                      ) : null}
+                    </div>
                     <h3 className="mt-4 text-xl font-semibold text-ink group-hover:text-accent-hover">
                       {guideFeatured.title}
                     </h3>
                     <p className="mt-2 text-sm text-ink-muted">
                       {guideFeatured.excerpt}
                     </p>
-                    <span className="mt-3 inline-flex text-sm font-medium text-accent-hover opacity-0 transition group-hover:opacity-100">
-                      閱讀全文 →
+                    <span className="mt-3 inline-flex text-sm font-medium text-ink transition group-hover:text-accent-hover">
+                      {t("landing.guide.read")}
                     </span>
                   </article>
                 </Link>
@@ -577,18 +584,31 @@ export function LandingMarketingPage() {
                       key={item.slug}
                       href={`/articles/${item.slug}`}
                       className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-app"
-                      aria-label={`閱讀：${item.title}`}
+                      aria-label={t("landing.guide.readAria", {
+                        title: item.title,
+                      })}
                     >
                       <article className="rounded-2xl bg-surface p-4 shadow-card transition group-hover:shadow-lg">
                         <div
-                          className={`aspect-video rounded-lg ${idx === 0 ? "bg-peach/30" : "bg-sand/40"}`}
-                          aria-hidden
-                        />
+                          className={`relative aspect-video overflow-hidden rounded-lg ${
+                            idx === 0 ? "bg-peach/30" : "bg-sand/40"
+                          }`}
+                        >
+                          {item.coverImage ? (
+                            <Image
+                              src={item.coverImage}
+                              alt={item.title}
+                              fill
+                              className="object-cover"
+                              sizes="(min-width: 1024px) 28vw, 100vw"
+                            />
+                          ) : null}
+                        </div>
                         <h3 className="mt-3 text-sm font-semibold text-ink group-hover:text-accent-hover">
                           {item.title}
                         </h3>
-                        <span className="mt-2 inline-flex text-xs font-medium text-accent-hover opacity-0 transition group-hover:opacity-100">
-                          閱讀全文 →
+                        <span className="mt-2 inline-flex text-xs font-medium text-ink transition group-hover:text-accent-hover">
+                          {t("landing.guide.read")}
                         </span>
                       </article>
                     </Link>
@@ -602,35 +622,55 @@ export function LandingMarketingPage() {
         {/* —— 雙欄 CTA（參考：Virtual Office / Mission） */}
         <section className="bg-surface py-16 sm:py-20">
           <div className="mx-auto grid max-w-6xl gap-6 px-4 sm:grid-cols-2 sm:px-6">
-            <div className="rounded-2xl bg-app p-8 shadow-card">
-              <div className="h-24 rounded-lg bg-peach/25" aria-hidden />
-              <h3 className="mt-6 text-xl font-semibold text-ink">
-                準備好開始整理了嗎？
-              </h3>
-              <p className="mt-2 text-sm text-ink-muted">
-                無需註冊，直接在瀏覽器建立你的第一個空間，開始規劃你的夢想居家。
+            <div className="group rounded-2xl bg-app p-8 shadow-card transition hover:-translate-y-0.5 hover:shadow-lg">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-soft">
+                Before / After
               </p>
+              <div className="relative mt-2 min-h-16 overflow-hidden">
+                <p className="font-moodly text-[2em] leading-tight font-semibold tracking-[0.01em] text-[#d4a373] transition duration-300 group-hover:-translate-y-8 group-hover:opacity-0">
+                  {t("landing.cta2.before")}
+                </p>
+                <p className="font-moodly absolute inset-0 translate-y-8 text-[2em] leading-tight font-semibold tracking-[0.01em] text-[#d4a373] opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  {t("landing.cta2.after")}
+                </p>
+              </div>
+              <h3 className="mt-2 text-xl font-semibold text-ink">
+                {t("landing.cta2.title")}
+              </h3>
+              <p className="mt-1 text-sm text-ink-muted">{t("landing.cta2.body")}</p>
               <Link
                 href="/"
-                className="mt-6 inline-flex rounded-full bg-accent px-5 py-2 text-sm font-medium text-on-accent hover:bg-accent-hover"
+                className="mt-6 inline-flex items-center gap-1 rounded-full bg-accent px-5 py-2 text-sm font-medium text-on-accent transition hover:bg-accent-hover"
               >
-                立即體驗
+                {t("landing.cta2.btn")}
+                <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </div>
-            <div className="rounded-2xl bg-app p-8 shadow-card">
-              <div className="h-24 rounded-lg bg-sage/25" aria-hidden />
-              <h3 className="mt-6 text-xl font-semibold text-ink">
-                關於 Moodly
+            <div className="group rounded-2xl bg-app p-8 shadow-card transition hover:-translate-y-0.5 hover:shadow-lg">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-soft">
+                Before / After
+              </p>
+              <div className="relative mt-2 min-h-16 overflow-hidden">
+                <p className="font-moodly text-[2em] leading-tight font-semibold tracking-[0.01em] text-[#8fbfa1] transition duration-300 group-hover:-translate-y-8 group-hover:opacity-0">
+                  {t("landing.cta3.before")}
+                </p>
+                <p className="font-moodly absolute inset-0 translate-y-8 text-[2em] leading-tight font-semibold tracking-[0.01em] text-[#8fbfa1] opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  {t("landing.cta3.after")}
+                </p>
+              </div>
+              <h3 className="mt-2 text-xl font-semibold text-ink">
+                {t("landing.cta3.title")}
               </h3>
-              <p className="mt-2 text-sm text-ink-muted">
-                我們相信，每個人都值得擁有理想的生活空間，而這一切就從釐清需求開始。
+              <p className="mt-1 text-sm text-ink-muted">
+                {t("landing.cta3.body")}
               </p>
               <a
                 href="#value"
-                className="mt-6 inline-flex rounded-full border border-border-sand px-5 py-2 text-sm font-medium text-ink hover:bg-peach/30"
-                title="了解更多"
+                className="mt-6 inline-flex items-center gap-1 rounded-full border border-border-sand px-5 py-2 text-sm font-medium text-ink transition hover:bg-peach/30"
+                title={t("landing.cta3.titleAttr")}
               >
-                品牌理念
+                {t("landing.cta3.btn")}
+                <span className="transition-transform group-hover:translate-x-1">→</span>
               </a>
             </div>
           </div>
@@ -638,44 +678,41 @@ export function LandingMarketingPage() {
 
         {/* —— 聯絡 + 頁尾（sage #C9D6C4 底 + sage-ink 字） */}
         <section className="bg-sage py-16 text-sage-ink sm:py-20">
-          <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-2">
-            <div>
-              <h2 className="font-moodly text-2xl font-semibold text-sage-ink">
-                與我們聯絡（表單佔位）
-              </h2>
-              <p className="mt-2 text-sm text-sage-ink/75">
-                之後可接後端或第三方表單；目前僅版型。
-              </p>
-              <form
-                className="mt-6 space-y-3"
-                onSubmit={(e) => e.preventDefault()}
-              >
-                <input
-                  placeholder="姓名"
-                  className="w-full rounded-lg border border-sage-ink/20 bg-surface/90 px-3 py-2 text-sm text-ink placeholder:text-ink-soft shadow-sm"
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="w-full rounded-lg border border-sage-ink/20 bg-surface/90 px-3 py-2 text-sm text-ink placeholder:text-ink-soft shadow-sm"
-                />
-                <textarea
-                  placeholder="訊息"
-                  rows={3}
-                  className="w-full rounded-lg border border-sage-ink/20 bg-surface/90 px-3 py-2 text-sm text-ink placeholder:text-ink-soft shadow-sm"
-                />
-                <button
-                  type="submit"
-                  className="rounded-full bg-accent px-6 py-2 text-sm font-medium text-on-accent shadow-card hover:bg-accent-hover"
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="mx-auto max-w-2xl overflow-hidden rounded-4xl border border-sage-ink/10 bg-surface/95 shadow-card">
+              <div className="p-8 sm:p-10">
+                <h2 className="font-moodly text-center text-2xl font-semibold text-sage-ink">
+                  {t("landing.contact.title")}
+                </h2>
+                <p className="mt-2 text-center text-sm text-sage-ink/75">
+                  {t("landing.contact.hint")}
+                </p>
+                <form
+                  className="mx-auto mt-6 max-w-lg space-y-3"
+                  onSubmit={(e) => e.preventDefault()}
                 >
-                  送出（佔位）
-                </button>
-              </form>
-            </div>
-            <div className="flex items-center justify-center rounded-2xl bg-surface/50 p-8 shadow-card">
-              <span className="text-center text-sm text-sage-ink/60">
-                插圖／品牌視覺佔位
-              </span>
+                  <input
+                    placeholder={t("landing.contact.namePh")}
+                    className="w-full rounded-lg border border-sage-ink/20 bg-surface/90 px-3 py-2 text-sm text-ink placeholder:text-ink-soft shadow-sm"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="w-full rounded-lg border border-sage-ink/20 bg-surface/90 px-3 py-2 text-sm text-ink placeholder:text-ink-soft shadow-sm"
+                  />
+                  <textarea
+                    placeholder={t("landing.contact.msgPh")}
+                    rows={3}
+                    className="w-full resize-none rounded-lg border border-sage-ink/20 bg-surface/90 px-3 py-2 text-sm text-ink placeholder:text-ink-soft shadow-sm"
+                  />
+                  <button
+                    type="submit"
+                    className="mx-auto block rounded-full bg-accent px-6 py-2 text-sm font-medium text-on-accent shadow-card hover:bg-accent-hover"
+                  >
+                    {t("landing.contact.submit")}
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
 
@@ -686,14 +723,10 @@ export function LandingMarketingPage() {
                   Moodly
                 </p>
                 <p className="mt-2 text-xs text-sage-ink/70">
-                  本機優先的靈感整理工具（佔位說明）。
+                  {t("landing.footer.blurb")}
                 </p>
               </div>
-              {[
-                { title: "產品", links: ["功能一", "功能二", "定價（佔位）"] },
-                { title: "資源", links: ["說明文件", "部落格（佔位）"] },
-                { title: "法律", links: ["隱私權", "條款（佔位）"] },
-              ].map((col) => (
+              {footerCols.map((col) => (
                 <div key={col.title}>
                   <p className="text-xs font-semibold uppercase tracking-wider text-sage-ink/50">
                     {col.title}
@@ -711,7 +744,7 @@ export function LandingMarketingPage() {
               ))}
             </div>
             <p className="mt-10 pb-6 text-center text-xs text-sage-ink/55">
-              © {new Date().getFullYear()} Moodly · 頁尾佔位
+              {t("landing.footer.copy", { year: new Date().getFullYear() })}
             </p>
           </footer>
         </section>

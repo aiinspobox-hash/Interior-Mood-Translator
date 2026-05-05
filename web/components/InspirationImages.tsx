@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useI18n } from "@/contexts/I18nContext";
 import { MAX_IMAGE_BYTES } from "@/lib/constants";
 import type { InspireImage } from "@/lib/types";
 
@@ -20,6 +21,8 @@ function readFileAsDataUrl(file: File): Promise<string> {
 }
 
 export function InspirationImages({ images, onAdd, onRemove }: Props) {
+  const { t } = useI18n();
+  const mb = Math.round(MAX_IMAGE_BYTES / 1024 / 1024);
   const inputRef = useRef<HTMLInputElement>(null);
   const [urlDraft, setUrlDraft] = useState("");
   const [labelDraft, setLabelDraft] = useState("");
@@ -31,18 +34,18 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
     if (!files?.length) return;
     for (const file of Array.from(files)) {
       if (!file.type.startsWith("image/")) {
-        setError("請選擇圖片檔案");
+        setError(t("err.pickFile"));
         continue;
       }
       if (file.size > MAX_IMAGE_BYTES) {
-        setError(`單張請小於 ${Math.round(MAX_IMAGE_BYTES / 1024 / 1024)}MB`);
+        setError(t("err.fileTooLarge", { mb }));
         continue;
       }
       try {
         const src = await readFileAsDataUrl(file);
         onAdd({ src, sourceLabel: labelDraft.trim() || file.name });
       } catch {
-        setError("讀取圖片失敗");
+        setError(t("err.readFail"));
       }
     }
     if (inputRef.current) inputRef.current.value = "";
@@ -57,11 +60,11 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
     try {
       u = new URL(raw);
     } catch {
-      setError("請輸入有效的 http(s) 圖片網址");
+      setError(t("err.invalidUrl"));
       return;
     }
     if (u.protocol !== "http:" && u.protocol !== "https:") {
-      setError("僅支援 http / https");
+      setError(t("err.httpOnly"));
       return;
     }
 
@@ -75,11 +78,11 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
 
       const data: { dataUrl?: string; error?: string } = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "下載圖片失敗");
+        setError(data.error ?? t("err.downloadFail"));
         return;
       }
       if (!data.dataUrl) {
-        setError("伺服器回應異常，請稍後再試");
+        setError(t("err.serverOdd"));
         return;
       }
 
@@ -89,7 +92,7 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
       });
       setUrlDraft("");
     } catch {
-      setError("無法連線，請確認已啟動開發伺服器或網路正常");
+      setError(t("err.offline"));
     } finally {
       setUrlFetching(false);
     }
@@ -97,15 +100,14 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
 
   return (
     <section className="space-y-4">
-      <h2 className="text-base font-semibold text-ink">靈感圖片</h2>
-      <p className="text-sm text-ink-muted">
-        上傳檔案，或貼上圖片 URL（系統會由伺服器下載並轉成可匯出
-        PDF 的格式）。可選填來源標記（品牌、平台）。
-      </p>
+      <h2 className="text-base font-semibold text-ink">{t("insp.title")}</h2>
+      <p className="text-sm text-ink-muted">{t("insp.subtitle")}</p>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="rounded-xl bg-peach/40 p-4 shadow-card">
-          <p className="mb-2 text-xs font-medium text-ink-muted">本機上傳</p>
+          <p className="mb-2 text-xs font-medium text-ink-muted">
+            {t("insp.localUpload")}
+          </p>
           <input
             ref={inputRef}
             type="file"
@@ -116,7 +118,9 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
           />
         </div>
         <div className="rounded-xl bg-peach/40 p-4 shadow-card">
-          <p className="mb-2 text-xs font-medium text-ink-muted">圖片網址</p>
+          <p className="mb-2 text-xs font-medium text-ink-muted">
+            {t("insp.imageUrl")}
+          </p>
           <input
             value={urlDraft}
             onChange={(e) => setUrlDraft(e.target.value)}
@@ -130,19 +134,19 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
             onClick={() => void addFromUrl()}
             className="w-full rounded-full bg-accent py-2.5 text-sm font-medium text-on-accent hover:bg-accent-hover disabled:opacity-60"
           >
-            {urlFetching ? "下載圖片中…" : "加入網址圖片"}
+            {urlFetching ? t("insp.fetching") : t("insp.addUrl")}
           </button>
         </div>
       </div>
 
       <div className="rounded-xl bg-surface p-4 shadow-card">
         <label className="text-xs font-medium text-ink-muted">
-          來源標記（選填，套用於接下來新增的圖片）
+          {t("insp.sourceLabel")}
         </label>
         <input
           value={labelDraft}
           onChange={(e) => setLabelDraft(e.target.value)}
-          placeholder="例：Pinterest、品牌官網"
+          placeholder={t("insp.sourcePlaceholder")}
           className="mt-1 w-full rounded-lg border border-border-warm px-3 py-2 text-sm text-ink placeholder:text-ink-soft outline-none ring-accent/25 focus:ring-2"
         />
       </div>
@@ -154,7 +158,7 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
       )}
 
       {images.length === 0 ? (
-        <p className="text-sm text-ink-soft">尚無圖片，請先上傳或加入網址。</p>
+        <p className="text-sm text-ink-soft">{t("insp.empty")}</p>
       ) : (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
           {images.map((img) => (
@@ -176,7 +180,7 @@ export function InspirationImages({ images, onAdd, onRemove }: Props) {
                   className="shrink-0 text-danger hover:underline"
                   onClick={() => onRemove(img.id)}
                 >
-                  移除
+                  {t("insp.remove")}
                 </button>
               </div>
             </li>

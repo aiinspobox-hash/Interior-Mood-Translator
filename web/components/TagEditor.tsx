@@ -8,6 +8,8 @@ type Props = {
   suggestions: readonly string[];
   tags: string[];
   onChange: (tags: string[]) => void;
+  addButtonLabel?: string;
+  removeAriaLabel?: (tag: string) => string;
 };
 
 export function TagEditor({
@@ -16,6 +18,8 @@ export function TagEditor({
   suggestions,
   tags,
   onChange,
+  addButtonLabel = "新增",
+  removeAriaLabel = (tag) => `移除 ${tag}`,
 }: Props) {
   const [draft, setDraft] = useState("");
   /** 中文輸入法組字中；配合 isComposing 避免 Enter 被拿去新增標籤 */
@@ -80,7 +84,7 @@ export function TagEditor({
           onClick={() => submitDraft()}
           className="shrink-0 rounded-full bg-accent px-4 py-2 text-sm font-medium text-on-accent hover:bg-accent-hover"
         >
-          新增
+          {addButtonLabel}
         </button>
       </div>
       {tags.length > 0 && (
@@ -94,7 +98,7 @@ export function TagEditor({
               <button
                 type="button"
                 className="ml-0.5 rounded hover:bg-sage-ink/10"
-                aria-label={`移除 ${t}`}
+                aria-label={removeAriaLabel(t)}
                 onClick={() => onChange(tags.filter((x) => x !== t))}
               >
                 ×

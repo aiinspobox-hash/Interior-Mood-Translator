@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { DESIGN_BRIEF_EXPORT_ID } from "@/components/MoodboardPreview";
+import { useI18n } from "@/contexts/I18nContext";
 import {
   captureElementToCanvas,
   fitCanvasOnCurrentPdfPage,
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export function ExportPdfButton({ fileNameBase }: Props) {
+  const { t } = useI18n();
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -20,7 +22,7 @@ export function ExportPdfButton({ fileNameBase }: Props) {
     setErr(null);
     const el = document.getElementById(DESIGN_BRIEF_EXPORT_ID);
     if (!el) {
-      setErr("找不到匯出區塊");
+      setErr(t("pdf.noBlock"));
       return;
     }
     setBusy(true);
@@ -37,7 +39,7 @@ export function ExportPdfButton({ fileNameBase }: Props) {
       pdf.save(`design-brief-${safe || "room"}.pdf`);
     } catch (e) {
       console.error(e);
-      setErr("匯出失敗。請重新整理頁面後再試，或減少圖片數量。");
+      setErr(t("pdf.exportFail"));
     } finally {
       setBusy(false);
     }
@@ -51,7 +53,7 @@ export function ExportPdfButton({ fileNameBase }: Props) {
         onClick={() => void exportPdf()}
         className="inline-flex items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-medium text-on-accent shadow-card hover:bg-accent-hover disabled:opacity-60"
       >
-        {busy ? "產生 PDF 中…" : "匯出 PDF"}
+        {busy ? t("pdf.exporting") : t("pdf.export")}
       </button>
       {err && (
         <p className="text-sm text-danger" role="alert">

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Geist_Mono, Playfair_Display } from "next/font/google";
 import { PersistGate } from "@/components/PersistGate";
+import { I18nProvider } from "@/contexts/I18nContext";
 import "./globals.css";
 
 const geistMono = Geist_Mono({
@@ -46,7 +47,9 @@ export default function RootLayout({
       className={`${geistMono.variable} ${dmSans.variable} ${moodlyDisplay.variable} h-full bg-app text-ink antialiased`}
     >
       <body className="font-sans flex min-h-full flex-col bg-app text-ink antialiased">
-        <PersistGate>{children}</PersistGate>
+        <I18nProvider>
+          <PersistGate>{children}</PersistGate>
+        </I18nProvider>
       </body>
     </html>
   );

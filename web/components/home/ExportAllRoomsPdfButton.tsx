@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { MoodboardPreview } from "@/components/MoodboardPreview";
+import { useI18n } from "@/contexts/I18nContext";
 import {
   captureElementToCanvas,
   fitCanvasOnCurrentPdfPage,
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function ExportAllRoomsPdfButton({ rooms }: Props) {
+  const { t } = useI18n();
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -51,7 +53,7 @@ export function ExportAllRoomsPdfButton({ rooms }: Props) {
       }
 
       if (firstPage) {
-        setErr("找不到可匯出的內容，請重新整理頁面後再試。");
+        setErr(t("pdf.allEmpty"));
         return;
       }
 
@@ -59,7 +61,7 @@ export function ExportAllRoomsPdfButton({ rooms }: Props) {
       pdf.save(`moodly-all-spaces-${stamp}.pdf`);
     } catch (e) {
       console.error(e);
-      setErr("批次匯出失敗，請稍後再試或減少圖片數量。");
+      setErr(t("pdf.allFail"));
     } finally {
       setBusy(false);
     }
@@ -88,7 +90,7 @@ export function ExportAllRoomsPdfButton({ rooms }: Props) {
           onClick={() => void exportAll()}
           className="inline-flex w-fit items-center justify-center rounded-full bg-surface px-5 py-2.5 text-sm font-medium text-ink shadow-card transition hover:bg-peach/40 hover:shadow-lg disabled:opacity-60"
         >
-          {busy ? "產生 PDF 中…" : "匯出全部空間 PDF"}
+          {busy ? t("pdf.exporting") : t("pdf.allRooms")}
         </button>
         {err && (
           <p className="text-sm text-danger" role="alert">

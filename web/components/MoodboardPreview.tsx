@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useI18n } from "@/contexts/I18nContext";
 import { MOODBOARD_MAX_FURNITURE, MOODBOARD_MAX_IMAGES } from "@/lib/constants";
 import { extractPaletteFromImageSources } from "@/lib/extractImagePalette";
 import type { Room } from "@/lib/types";
@@ -33,6 +34,7 @@ export function MoodboardPreview({
   exportElementId,
   showHeading = true,
 }: Props) {
+  const { t } = useI18n();
   const exportId = exportElementId ?? DESIGN_BRIEF_EXPORT_ID;
   const furnitureList = room.furniture ?? [];
   const shownFurniture = furnitureList.slice(0, MOODBOARD_MAX_FURNITURE);
@@ -98,7 +100,7 @@ export function MoodboardPreview({
     >
         <header className="pb-4">
           <p className="text-xs uppercase tracking-wider text-ink-soft">
-            Moodly · Design Brief
+            {t("mb.briefLine")}
           </p>
           <h3 className="mt-1 text-2xl font-semibold tracking-tight text-ink">
             {room.name}
@@ -108,37 +110,37 @@ export function MoodboardPreview({
         <div className="mt-5 grid gap-6 lg:grid-cols-2">
           <div className="space-y-3 text-sm">
             <div>
-              <p className="text-xs font-medium text-ink-soft">文字需求</p>
+              <p className="text-xs font-medium text-ink-soft">{t("mb.notes")}</p>
               <p className="mt-1 whitespace-pre-wrap text-ink">
-                {room.notes.trim() || "—"}
+                {room.notes.trim() || t("mb.dash")}
               </p>
             </div>
             <div>
-              <p className="text-xs font-medium text-ink-soft">風格／關鍵字</p>
+              <p className="text-xs font-medium text-ink-soft">{t("mb.styleTags")}</p>
               <p className="mt-1 text-ink">
-                {room.styleTags.length ? room.styleTags.join(" · ") : "—"}
+                {room.styleTags.length ? room.styleTags.join(" · ") : t("mb.dash")}
               </p>
             </div>
             <div>
-              <p className="text-xs font-medium text-ink-soft">色系標籤</p>
+              <p className="text-xs font-medium text-ink-soft">{t("mb.colorTags")}</p>
               <p className="mt-1 text-ink">
-                {room.colorTags.length ? room.colorTags.join(" · ") : "—"}
+                {room.colorTags.length ? room.colorTags.join(" · ") : t("mb.dash")}
               </p>
             </div>
             <div>
-              <p className="text-xs font-medium text-ink-soft">避免項目</p>
+              <p className="text-xs font-medium text-ink-soft">{t("mb.avoid")}</p>
               <p className="mt-1 whitespace-pre-wrap text-ink">
-                {room.avoidNotes.trim() || "—"}
+                {room.avoidNotes.trim() || t("mb.dash")}
               </p>
             </div>
           </div>
 
           <div className="flex min-h-[120px] flex-col">
             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink">
-              INSPIRATION IMAGES
+              {t("mb.inspirationTitle")}
             </p>
             {shown.length === 0 ? (
-              <p className="mt-3 text-sm text-ink-soft">尚無圖片</p>
+              <p className="mt-3 text-sm text-ink-soft">{t("mb.noImages")}</p>
             ) : (
               <>
                 <div className="mt-3 grid grid-cols-2 gap-2">
@@ -159,8 +161,10 @@ export function MoodboardPreview({
                 </div>
                 {extras > 0 && (
                   <p className="mt-2 text-xs text-ink-soft">
-                    另有 {extras} 張未放入拼貼（單頁最多 {MOODBOARD_MAX_IMAGES}{" "}
-                    張）
+                    {t("mb.moreImages", {
+                      count: extras,
+                      max: MOODBOARD_MAX_IMAGES,
+                    })}
                   </p>
                 )}
               </>
@@ -186,8 +190,10 @@ export function MoodboardPreview({
                 </div>
                 {furnitureExtras > 0 && (
                   <p className="mt-2 text-xs text-ink-soft">
-                    另有 {furnitureExtras} 件家具圖未放入拼貼（單頁最多{" "}
-                    {MOODBOARD_MAX_FURNITURE} 張）
+                    {t("mb.moreFurniture", {
+                      count: furnitureExtras,
+                      max: MOODBOARD_MAX_FURNITURE,
+                    })}
                   </p>
                 )}
               </div>
@@ -197,19 +203,17 @@ export function MoodboardPreview({
 
         <div className="mt-8">
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink">
-            COLOR PALETTE
+            {t("mb.paletteTitle")}
           </p>
           <p className="mt-1 text-[10px] text-ink-soft">
-            依靈感圖片自動萃取 5 色
+            {t("mb.paletteHint")}
           </p>
           {shown.length === 0 ? (
-            <p className="mt-4 text-sm text-ink-soft">尚無圖片，無法產生色票</p>
+            <p className="mt-4 text-sm text-ink-soft">{t("mb.noPalette")}</p>
           ) : paletteLoading ? (
-            <p className="mt-4 text-sm text-ink-soft">分析圖片色調中…</p>
+            <p className="mt-4 text-sm text-ink-soft">{t("mb.paletteLoading")}</p>
           ) : paletteHex.length === 0 ? (
-            <p className="mt-4 text-sm text-ink-soft">
-              無法從目前圖片萃取色票（可能為載入限制）
-            </p>
+            <p className="mt-4 text-sm text-ink-soft">{t("mb.paletteFail")}</p>
           ) : (
             <div className="mt-5 flex flex-wrap items-center gap-4">
               {paletteHex.map((hex) => (
@@ -225,8 +229,8 @@ export function MoodboardPreview({
         </div>
 
         <footer className="mt-8 pt-4 text-[10px] text-ink-soft">
-          <p>Design summary — for discussion purposes only.</p>
-          <p className="mt-1">設計摘要 · 供討論使用。</p>
+          <p>{t("mb.footerEn")}</p>
+          <p className="mt-1">{t("mb.footerZh")}</p>
         </footer>
     </div>
   );
@@ -237,9 +241,7 @@ export function MoodboardPreview({
 
   return (
     <section className="space-y-4">
-      <h2 className="text-base font-semibold text-ink">
-        Moodboard 預覽（匯出 PDF 使用此區）
-      </h2>
+      <h2 className="text-base font-semibold text-ink">{t("mb.sectionTitle")}</h2>
       {card}
     </section>
   );

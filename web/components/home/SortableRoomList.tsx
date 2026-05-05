@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Fragment, useCallback, useState } from "react";
+import { useI18n } from "@/contexts/I18nContext";
 import { reorderIds } from "@/lib/roomOrder";
 import { useRoomStore } from "@/lib/store";
 import type { Room } from "@/lib/types";
@@ -35,7 +36,9 @@ function sameOrder(a: string[], b: string[]) {
 }
 
 export function SortableRoomList({ rooms, onReorder }: Props) {
+  const { t, locale } = useI18n();
   const removeRoom = useRoomStore((s) => s.removeRoom);
+  const dateLocale = locale === "en" ? "en-US" : "zh-TW";
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [overRowIndex, setOverRowIndex] = useState<number | null>(null);
   const [overGapInsertBefore, setOverGapInsertBefore] = useState<number | null>(
@@ -140,7 +143,7 @@ export function SortableRoomList({ rooms, onReorder }: Props) {
                 }}
                 onDragEnd={endDrag}
                 className="flex shrink-0 cursor-grab touch-none items-center rounded-l-xl bg-peach/15 px-2 text-ink-soft transition hover:bg-peach/25 hover:text-ink active:cursor-grabbing"
-                aria-label={`拖移排序：${r.name}`}
+                aria-label={t("sort.drag", { name: r.name })}
               >
                 <GripIcon />
               </button>
@@ -151,12 +154,14 @@ export function SortableRoomList({ rooms, onReorder }: Props) {
                 <div className="min-w-0">
                   <p className="font-medium text-ink">{r.name}</p>
                   <p className="mt-1 text-xs text-ink-soft">
-                    {r.images.length} 張圖 ·{" "}
-                    {new Date(r.updatedAt).toLocaleString("zh-TW")}
+                    {t("sort.imagesMeta", {
+                      count: r.images.length,
+                      date: new Date(r.updatedAt).toLocaleString(dateLocale),
+                    })}
                   </p>
                 </div>
                 <span className="shrink-0 text-sm font-medium text-accent-hover">
-                  編輯 →
+                  {t("sort.edit")}
                 </span>
               </Link>
               <div className="flex shrink-0 flex-col justify-center gap-0.5 bg-app/60 py-2 pr-2 pl-1">
@@ -168,7 +173,7 @@ export function SortableRoomList({ rooms, onReorder }: Props) {
                     commitInsertBefore(index, index - 1);
                   }}
                   className="rounded-md px-2 py-1 text-xs text-ink-soft hover:bg-peach/40 hover:text-ink disabled:opacity-30"
-                  aria-label={`將「${r.name}」上移`}
+                  aria-label={t("sort.moveUp", { name: r.name })}
                 >
                   ↑
                 </button>
@@ -183,7 +188,7 @@ export function SortableRoomList({ rooms, onReorder }: Props) {
                     );
                   }}
                   className="rounded-md px-2 py-1 text-xs text-ink-soft hover:bg-peach/40 hover:text-ink disabled:opacity-30"
-                  aria-label={`將「${r.name}」下移`}
+                  aria-label={t("sort.moveDown", { name: r.name })}
                 >
                   ↓
                 </button>
@@ -192,19 +197,15 @@ export function SortableRoomList({ rooms, onReorder }: Props) {
                 type="button"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (
-                    !window.confirm(
-                      `確定要刪除「${r.name}」嗎？此空間內的靈感與設定會一併從本機移除，且無法復原。`,
-                    )
-                  ) {
+                  if (!window.confirm(t("sort.deleteConfirm", { name: r.name }))) {
                     return;
                   }
                   removeRoom(r.id);
                 }}
                 className="flex shrink-0 items-center self-stretch rounded-r-xl bg-peach/10 px-3 text-xs font-medium text-danger transition hover:bg-danger-surface"
-                aria-label={`刪除空間：${r.name}`}
+                aria-label={t("sort.deleteAria", { name: r.name })}
               >
-                刪除
+                {t("sort.delete")}
               </button>
             </div>
           </li>
